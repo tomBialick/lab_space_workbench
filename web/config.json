@@ -2,7 +2,7 @@
   "host_info": {
     "hostname": "http://localhost:",
     "aws_http_hostname": "http://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:",
-    "http_port": "3000"
+    "http_port": "3000",
     "aws_https_hostname": "https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:",
     "https_port": "3001"
   },
