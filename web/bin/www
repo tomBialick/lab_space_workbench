@@ -9,8 +9,8 @@ var debug = require('debug')('web:server');
 var http = require('http');
 var fs = require('fs');
 var https = require('https');
-var privateKey  = fs.readFileSync('../certs/key.pem');
-var certificate = fs.readFileSync('../certs/cert.pem');
+var privateKey  = fs.readFileSync('certs/key.pem');
+var certificate = fs.readFileSync('certs/cert.pem');
 var credentials = {key: privateKey, cert: certificate};
 
 /**
