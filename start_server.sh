@@ -12,7 +12,7 @@ echo -e "${GREEN}===============================================================
 echo -e "${GREEN}Builidng Front-End${NC}"
 echo -e "${GREEN}=======================================================================================${NC}"
 echo ""
-cd client
+cd web/client
 npm run build
 sleep 10s
 echo ""
