@@ -11,7 +11,7 @@
     "db": "ec2-user",
     "username": "ec2-user",
     "password": "",
-    "port": "5432",
+    "port": "5432"
 
   },
   "s3": {
