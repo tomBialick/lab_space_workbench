@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# certificates/secret stuff directory
+/certs
+
+# any pem files that got loose
+*.pem
