@@ -62,6 +62,7 @@ typings/
 
 # certificates/secret stuff directory
 /certs
+/web/certs
 
 # any pem files that got loose
 *.pem
