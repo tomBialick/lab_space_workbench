@@ -10,11 +10,11 @@ const initOptions = {
 
 const pgp = require('pg-promise')(initOptions);
 const db = pgp({
-  user: conf_data["database"]["username"],
-  host: conf_data["database"]["host"],
-  database: conf_data["database"]["db"],
-  password: conf_data["database"]["password"],
-  port: conf_data["database"]["port"],
+  user: conf_data["postgresql"]["username"],
+  host: conf_data["postgresql"]["host"],
+  database: conf_data["postgresql"]["db"],
+  password: conf_data["postgresql"]["password"],
+  port: conf_data["postgresql"]["port"],
 });
 
 /* POST a new user */
