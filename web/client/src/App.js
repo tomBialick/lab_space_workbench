@@ -111,7 +111,7 @@ class Messages extends Component {
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         {
           this.state.messages.map(messageData => {
-            return (<p>{messageData.message}</p>)
+            return (<p>{...messageData.message}</p>)
           })
         }
       </div>
