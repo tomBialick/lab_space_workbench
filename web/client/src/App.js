@@ -20,11 +20,8 @@ class App extends Component {
   }
 
   chatChange(event) {
-    console.log(event)
-    alert("Chat change")
     if (event.target.value) {
       this.setState({chat: event.target.value})
-      alert(event.target.value)
     }
   }
 
@@ -58,7 +55,7 @@ class App extends Component {
         <div id = "message-area" style={{width:'100%'}}>
           <form>
             <label>Name:
-              <input type="text" onChange={(e) => this.nameChange()}/>
+              <input type="text" onChange={this.nameChange}/>
             </label>
             <br />
             <label>Chat:
