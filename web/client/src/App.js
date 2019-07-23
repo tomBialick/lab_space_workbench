@@ -97,7 +97,7 @@ class Messages extends Component {
       //<h4>{messageData.username}</h4>
       if (responseJson.body[0]) {
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-        this.setState({messages: (state.messages.push(responseJson.body))})
+        this.setState(state => ({messages: (state.messages.push(responseJson.body))}))
       }
     })
 
