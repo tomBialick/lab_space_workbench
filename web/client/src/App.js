@@ -20,6 +20,7 @@ class App extends Component {
   }
 
   chatChange(event) {
+    console.log(event)
     alert("Chat change")
     if (event.target.value) {
       this.setState({chat: event.target.value})
