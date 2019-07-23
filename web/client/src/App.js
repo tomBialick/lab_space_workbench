@@ -6,11 +6,41 @@ class App extends Component {
     super(props);
     this.state = {
       name: "",
-      chat: ""
+      chat: "",
+      updateLogClicked: false,
+      chatLog: [{
+        'Site':'You Can Chat Now!'
+      }],
+      lastMessageID: 0
+
     };
     this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
-    this.sendChat = this.sendChat.bind(this)
+    this.sendChat = this.sendChat.bind(this);
+    this.getChat = this.getChat.bind(this);
+  }
+  {
+                 Object.keys(this.props.fruits).map(function(key) {
+                   return <li className="list-group-item list-group-item-info">{this.props.fruits[key]}</li>
+                 }.bind(this))
+               }
+  getChat(event) {
+    event.preventDefault();
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    fetch( hosturl + '/chat' + '?messageID=' + this.state.lastMessageID, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then(response => response.json()).then((responseJson) => {
+      console.log(responseJson.body)
+    })
+
+  }
+
+  addChat(messages) {
+
+
   }
 
   nameChange(event) {
@@ -29,8 +59,8 @@ class App extends Component {
     event.preventDefault();
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
     let data = {
-      "name": this.state.name,
-      "chat": this.state.chat
+      "username": this.state.name,
+      "message": this.state.chat
     };
     let data_json = JSON.stringify(data)
 
@@ -41,7 +71,7 @@ class App extends Component {
       },
       body: data_json
     }).then(response => response.json()).then((responseJson) => {
-      alert(responseJson.body)
+      console.log(responseJson.body)
     })
   }
 
@@ -50,6 +80,7 @@ class App extends Component {
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
+        <button onClick={(e) => this.getChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
         </div>
         <div id = "message-area" style={{width:'100%'}}>
