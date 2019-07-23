@@ -20,8 +20,10 @@ class App extends Component {
   }
 
   chatChange(event) {
+    alert("Chat change")
     if (event.target.value) {
       this.setState({chat: event.target.value})
+      alert(event.target.value)
     }
   }
 
@@ -57,6 +59,7 @@ class App extends Component {
             <label>Name:
               <input type="text" onChange={(e) => this.nameChange()}/>
             </label>
+            <br>
             <label>Chat:
               <input type="text" onChange={(e) => this.chatChange()}/>
             </label>
