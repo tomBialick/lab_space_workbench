@@ -8,13 +8,18 @@
 
   <script>
     window.onload=function(){
-      }
+      var hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001/'
+
+      document.getElementById("send").addEventListener("click", function (ev) {
+        ev.preventDefault();
+      })
+    }
   </script>
 </head>
 
 <body>
   <h1>Tom's Chat App</h1>
-  <p>Chat With Others? </p>
+  <p>Chat With Others?</p>
   <br>
   <div class="container">
     <br>
