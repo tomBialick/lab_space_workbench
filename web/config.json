@@ -7,7 +7,7 @@
     "https_port": "3001"
   },
   "postgresql": {
-    "host": "ec2-13-58-163-102.us-east-2.compute.amazonaws.com",
+    "host": "localhost",
     "db": "ec2-user",
     "username": "ec2-user",
     "password": "",
