@@ -25,8 +25,9 @@ class App extends Component {
     }
   }
 
-  sendChat() {
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001/';
+  sendChat(event) {
+    event.preventDefault();
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
     let data = {
       "name": this.state.name,
       "chat": this.state.chat
@@ -48,16 +49,18 @@ class App extends Component {
 
   render() {
     return (
-      <h1>Tom's Chat App</h1>,
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
             <label>Name:
-              <input type="text" onChange={this.nameChange}/>
+              <input type="text" onChange={(e) => this.nameChange()}/>
             </label>
-            <button onClick={this.sendChat}>Send</button>
+            <label>Chat:
+              <input type="text" onChange={(e) => this.chatChange()}/>
+            </label>
+            <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
         </div>
       </div>
