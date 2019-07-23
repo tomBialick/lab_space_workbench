@@ -93,11 +93,13 @@ class Messages extends Component {
           'Content-Type': 'application/json',
       }
     }).then(response => response.json()).then((responseJson) => {
-      console.log(responseJson.body)
+      //console.log(responseJson.body)
       //<h4>{messageData.username}</h4>
       if (responseJson.body[0]) {
+        console.log(this.state.messages)
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
+        console.log(this.state.messages)
       }
     })
 
