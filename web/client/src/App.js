@@ -18,6 +18,7 @@ class App extends Component {
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.getChat = this.getChat.bind(this);
+    this.addChat = this.addChat.bind(this);
   }
 //  {
 //               Object.keys(this.props.fruits).map(function(key) {
@@ -26,22 +27,39 @@ class App extends Component {
 //               }
   getChat(event) {
     event.preventDefault();
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-      }
-    }).then(response => response.json()).then((responseJson) => {
-      console.log(responseJson.body)
-      this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-    })
+    this.setState(state => ({updateLogClicked: !state.updateLogClicked})
 
   }
 
-  addChat(messages) {
 
 
+
+  addChat() {
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    if (this.state.updateLogClicked) {
+      this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
+      fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      }).then(response => response.json()).then((responseJson) => {
+        console.log(responseJson.body)
+        //<h4>{messageData.username}</h4>
+        if (responseJson.body[0]) {
+          this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
+          return (
+            <div>
+              {
+                responseJson.body.map(messageData => {
+                  return (<p>{messageData.message}</p>)
+                })
+              }
+            </div>
+          )
+        }
+      })
+    }
   }
 
   nameChange(event) {
@@ -72,7 +90,7 @@ class App extends Component {
       },
       body: data_json
     }).then(response => {
-      console.log(response)
+      console.log("message sent to server")
     })
   }
 
@@ -83,6 +101,7 @@ class App extends Component {
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <button onClick={(e) => this.getChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
+          {this.addChat}
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
