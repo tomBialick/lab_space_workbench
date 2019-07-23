@@ -27,8 +27,7 @@ class App extends Component {
 //               }
   getChat(event) {
     event.preventDefault();
-    this.setState(state => ({updateLogClicked: !state.updateLogClicked})
-
+    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
   }
 
 
