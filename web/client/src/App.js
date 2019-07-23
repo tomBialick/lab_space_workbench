@@ -19,11 +19,11 @@ class App extends Component {
     this.sendChat = this.sendChat.bind(this);
     this.getChat = this.getChat.bind(this);
   }
-  {
-                 Object.keys(this.props.fruits).map(function(key) {
-                   return <li className="list-group-item list-group-item-info">{this.props.fruits[key]}</li>
-                 }.bind(this))
-               }
+//  {
+//               Object.keys(this.props.fruits).map(function(key) {
+//                 return <li className="list-group-item list-group-item-info">{this.props.fruits[key]}</li>
+//                 }.bind(this))
+//               }
   getChat(event) {
     event.preventDefault();
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
