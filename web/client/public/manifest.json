@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Tom's Chat App",
+  "name": "Chat on a single page no refresh!",
   "icons": [
     {
       "src": "favicon.ico",
