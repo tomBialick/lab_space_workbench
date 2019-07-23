@@ -6,59 +6,11 @@ class App extends Component {
     super(props);
     this.state = {
       name: "",
-      chat: "",
-      updateLogClicked: false,
-      chatLog: [{
-        'Site':'You Can Chat Now!'
-      }],
-      lastMessageID: 0
-
+      chat: ""
     };
     this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
-    this.getChat = this.getChat.bind(this);
-    this.addChat = this.addChat.bind(this);
-  }
-//  {
-//               Object.keys(this.props.fruits).map(function(key) {
-//                 return <li className="list-group-item list-group-item-info">{this.props.fruits[key]}</li>
-//                 }.bind(this))
-//               }
-  getChat(event) {
-    event.preventDefault();
-    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
-  }
-
-
-
-
-  addChat() {
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    if (this.state.updateLogClicked) {
-      this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
-      fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-      }).then(response => response.json()).then((responseJson) => {
-        console.log(responseJson.body)
-        //<h4>{messageData.username}</h4>
-        if (responseJson.body[0]) {
-          this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-          return (
-            <div>
-              {
-                responseJson.body.map(messageData => {
-                  return (<p>{messageData.message}</p>)
-                })
-              }
-            </div>
-          )
-        }
-      })
-    }
   }
 
   nameChange(event) {
@@ -93,14 +45,11 @@ class App extends Component {
     })
   }
 
-
-
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
-        <button onClick={(e) => this.getChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          {this.addChat}
+          <Messages />
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
@@ -116,6 +65,55 @@ class App extends Component {
         </div>
       </div>
     );
+  }
+}
+
+
+
+
+class Messages extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      lastMessageID: 0,
+      messages: []
+    }
+    this.addChat = this.addChat.bind(this);
+  }
+
+
+  addChat(event) {
+    event.preventDefault();
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
+    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then(response => response.json()).then((responseJson) => {
+      console.log(responseJson.body)
+      //<h4>{messageData.username}</h4>
+      if (responseJson.body[0]) {
+        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
+        this.setState({messages: (state.messages.push(responseJson.body))})
+      }
+    })
+
+  }
+
+  render () {
+    return (
+      <div>
+        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
+        {
+          this.state.messages.map(messageData => {
+            return (<p>{messageData.message}</p>)
+          })
+        }
+      </div>
+    )
   }
 }
 
