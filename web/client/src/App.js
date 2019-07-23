@@ -40,8 +40,8 @@ class App extends Component {
 
   messageDataItem(m_data) {
     return (<div>
-              <h4>m_data.username</h4>
-              <p>m_data.message</p>
+              <h4>{m_data.username}</h4>
+              <p>{m_data.message}</p>
             </div>)
   }
 
