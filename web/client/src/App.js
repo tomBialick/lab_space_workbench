@@ -27,13 +27,14 @@ class App extends Component {
   getChat(event) {
     event.preventDefault();
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    fetch( hosturl + '/chat' + '?messageID=' + this.state.lastMessageID, {
+    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
       }
     }).then(response => response.json()).then((responseJson) => {
       console.log(responseJson.body)
+      this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
     })
 
   }
