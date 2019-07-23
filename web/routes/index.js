@@ -29,11 +29,11 @@ router.post('/chat', function(req, res, next) {
   let username = req.body.username;
   let message = req.body.message;
   db.query('SELECT MAX(MESSAGE_ID) FROM MESSAGES').then(data => {
-    if (!results[0]) {
+    if (!data[0]) {
       m_id = 0;
     }
     else {
-      m_id = results[0].max + 1;
+      m_id = data[0].max + 1;
     }
     db.query('INSERT INTO MESSAGES ( MESSAGE_ID, USERNAME, MESSAGE) VALUES ($1, $2, $3)', [m_id, username, message]).then(results => {
       res.status(200).send("message sent")
