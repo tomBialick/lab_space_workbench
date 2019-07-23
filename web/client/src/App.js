@@ -19,7 +19,7 @@ class App extends Component {
     }
   }
 
-  chatChange() {
+  chatChange(event) {
     console.log(event)
     alert("Chat change")
     if (event.target.value) {
@@ -62,7 +62,7 @@ class App extends Component {
             </label>
             <br />
             <label>Chat:
-              <input type="text" onChange={(e) => this.chatChange()}/>
+              <input type="text" onChange={this.chatChange}/>
             </label>
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
