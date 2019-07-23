@@ -70,8 +70,8 @@ class App extends Component {
           'Content-Type': 'application/json',
       },
       body: data_json
-    }).then(response => response.json()).then((responseJson) => {
-      console.log(responseJson.body)
+    }).then(response => {
+      console.log(response)
     })
   }
 

@@ -51,7 +51,7 @@ router.post('/chat', function(req, res, next) {
 router.get('/chat', function(req, res, next) {
   let messageQuery = req.query.messageID;
   db.query('SELECT * FROM MESSAGES WHERE MESSAGE_ID > $1', [messageQuery]).then(results => {
-    res.status(200).send(results)
+    res.status(200).json({body : results})
   }).catch(error => {
     console.log('ERROR:', error);
     res.status(400).send("Bad Request");
