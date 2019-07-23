@@ -48,7 +48,7 @@ class App extends Component {
 
   render() {
     return (
-      <h1>Tom's Chat App</h1>;
+      <h1>Tom's Chat App</h1>,
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
         </div>
