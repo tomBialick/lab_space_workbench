@@ -59,7 +59,7 @@ class App extends Component {
             <label>Name:
               <input type="text" onChange={(e) => this.nameChange()}/>
             </label>
-            <br>
+            <br />
             <label>Chat:
               <input type="text" onChange={(e) => this.chatChange()}/>
             </label>
