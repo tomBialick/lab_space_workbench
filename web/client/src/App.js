@@ -6,11 +6,42 @@ class App extends Component {
     super(props);
     this.state = {
       name: "",
-      chat: ""
-    };
+      chat: "",
+      lastMessageID: 0,
+      messages: []
+    }
+    this.addChat = this.addChat.bind(this);
     this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
+  }
+
+  addChat(event) {
+    event.preventDefault();
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
+    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then(response => response.json()).then((responseJson) => {
+      //console.log(responseJson.body)
+      //<h4>{messageData.username}</h4>
+      if (responseJson.body[0]) {
+        console.log(this.state.messages)
+        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
+        this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
+        console.log(this.state.messages)
+      }
+    })
+  }
+
+  messageDataItem(m_data) {
+    return (<div>
+              <h4>m_data.username</h4>
+              <p>m_data.message</p>
+            </div>)
   }
 
   nameChange(event) {
@@ -48,8 +79,12 @@ class App extends Component {
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
+        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          <Messages />
+          {this.state.messages.map(messageData => {
+            return messageDataItem(messageData)
+          })}
+
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
@@ -65,57 +100,6 @@ class App extends Component {
         </div>
       </div>
     );
-  }
-}
-
-
-
-
-class Messages extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      lastMessageID: 0,
-      messages: []
-    }
-    this.addChat = this.addChat.bind(this);
-  }
-
-
-  addChat(event) {
-    event.preventDefault();
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
-    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-      }
-    }).then(response => response.json()).then((responseJson) => {
-      //console.log(responseJson.body)
-      //<h4>{messageData.username}</h4>
-      if (responseJson.body[0]) {
-        console.log(this.state.messages)
-        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-        this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
-        console.log(this.state.messages)
-      }
-    })
-
-  }
-
-  render () {
-    return (
-      <div>
-        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
-        {
-          this.state.messages.map(messageData => {
-            return (<p>{...messageData.message}</p>)
-          })
-        }
-      </div>
-    )
   }
 }
 
