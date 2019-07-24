@@ -41,8 +41,10 @@ class App extends Component {
       }
     }).then(response => response.json()).then((responseJson) => {
       if (responseJson.body[0]) {
+        jsonData = responseJson.body;
+        jsonData.reverse();
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-        this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
+        this.setState(state => ({messages: [jsonData, ...state.messages]}))
       }
     })
   }
@@ -81,7 +83,7 @@ class App extends Component {
       },
       body: data_json
     }).then(response => {
-      console.log("message sent to server")
+      this.setState({chat: ""})
     })
   }
 
@@ -110,12 +112,6 @@ class App extends Component {
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
-        <div id = "chat-log-area" style={{width:'100%'}}>
-          <div id = "old-chat-log-area" style={{width:'100%'}}>
-            {this.handleOldChat()}
-          </div>
-        </div>
-        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
             <label>Name:
@@ -127,6 +123,12 @@ class App extends Component {
             </label>
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
+        </div>
+        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
+        <div id = "chat-log-area" style={{width:'100%'}}>
+          <div id = "old-chat-log-area" style={{width:'100%'}}>
+            {this.handleOldChat()}
+          </div>
         </div>
       </div>
     );
