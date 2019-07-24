@@ -83,7 +83,7 @@ class App extends Component {
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
           {this.state.messages.map(messageData => {
-            messageData.map(dataItem => (
+            return messageData.map(dataItem => (
               <React.Fragment key={dataItem.message_id}>
                 <h4>{dataItem.username}</h4>
                 <p>{dataItem.message}</p>
