@@ -29,6 +29,7 @@ class App extends Component {
     socket.on('messages', data => {
       this.setState(state => ({messages: [ ...state.messages, state.message]}))
       this.setState(state => ({message: data.payload}))
+      console.log(this.state.messages)
     })
   }
 
@@ -99,7 +100,6 @@ class App extends Component {
   }
 
   handleOldChat() {
-    console.log(this.state.messages)
     return(
         this.state.messages.map(messageData => {
         return messageData.map(dataItem => (
