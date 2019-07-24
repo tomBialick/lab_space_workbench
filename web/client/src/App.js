@@ -82,12 +82,14 @@ class App extends Component {
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          {this.state.messages.map(messageData => (
-            <>
+          {this.state.messages.map(messageData => {
+            console.log(messageData)
+            (
+            <React.Fragment key={messageData.message_id}>
               <h4>{messageData.username}</h4>
               <p>{messageData.message}</p>
-            </>
-          ))}
+            </React.Fragment>
+          )})}
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
