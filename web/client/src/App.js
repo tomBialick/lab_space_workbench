@@ -93,8 +93,10 @@ class App extends Component {
         this.state.messages.map(messageData => {
           return messageData.map(dataItem => (
             <React.Fragment key={dataItem.message_id}>
-              <h4>{dataItem.username}</h4>
-              <p>{dataItem.message}</p>
+              <div style={{border: '2px solid red'}}>
+                <h4>{dataItem.username}</h4>
+                <p>{dataItem.message}</p>
+              </div>
             </React.Fragment>
           )
         )})
