@@ -84,6 +84,7 @@ class App extends Component {
       body: data_json
     }).then(response => {
       this.setState({chat: ""})
+      this.refs.chatbox.value = '';
     })
   }
 
@@ -119,7 +120,7 @@ class App extends Component {
             </label>
             <br />
             <label>Chat:
-              <input type="text" value={this.state.chat}/>
+              <input type="text" onChange={this.chatChange} ref="chatbox"/>
             </label>
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
