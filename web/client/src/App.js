@@ -19,21 +19,20 @@ class App extends Component {
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);
-    this.initialFetchOldChat = this.initialFetchOldChat.bind(this);
+    this.fetchOldChat = this.fetchOldChat.bind(this);
   }
 
   componentDidMount() {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on('messages', data => {
-      this.setState(state => ({messages: [ ...state.messages, state.message]}))
+      //this.setState(state => ({messages: [ ...state.messages, state.message]}))
       this.setState(state => ({message: data.payload}))
-      console.log(this.state.messages)
-      this.initialFetchOldChat()
+      this.fetchOldChat()
     })
   }
 
-  initialFetchOldChat() {
+  fetchOldChat() {
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
     this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
     fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
@@ -52,19 +51,7 @@ class App extends Component {
 
   addChat(event) {
     event.preventDefault();
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
-    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json',
-      }
-    }).then(response => response.json()).then((responseJson) => {
-      if (responseJson.body[0]) {
-        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
-        this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
-      }
-    })
+    this.fetchOldChat();
   }
 
   nameChange(event) {
