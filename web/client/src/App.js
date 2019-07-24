@@ -91,8 +91,7 @@ class App extends Component {
   }
 
   handleChat() {
-    return
-      {
+    return({
         this.state.messages.map(messageData => {
         return messageData.map(dataItem => (
           <React.Fragment key={dataItem.message_id}>
@@ -105,7 +104,7 @@ class App extends Component {
           <h4>{this.state.message.username}</h4>
           <p>{this.state.message.message}</p>
         </React.Fragment>)
-      }
+      })
 
 
 
