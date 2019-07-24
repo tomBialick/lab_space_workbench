@@ -117,9 +117,11 @@ class App extends Component {
           <div id = "old-chat-log-area" style={{width:'100%'}}>
             {this.handleOldChat}
           </div>
-          //<div id = "new-chat-log-area" style={{width:'100%'}}>
-            //{this.handleNewChat}
-          //</div>
+          <div id = "new-chat-log-area" style={{width:'100%'}}>
+            {
+              //this.handleNewChat
+            }
+          </div>
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "message-area" style={{width:'100%'}}>
