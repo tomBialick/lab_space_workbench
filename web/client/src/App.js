@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 
 import socketIOClient from 'socket.io-client';
+let socket
 
 class App extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class App extends Component {
 
   componentDidMount() {
     const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
+    socket = socketIOClient(endpoint);
   }
 
 
