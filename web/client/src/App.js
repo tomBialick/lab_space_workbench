@@ -25,11 +25,11 @@ class App extends Component {
   componentDidMount() {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    this.initialFetchOldChat()
     socket.on('messages', data => {
       this.setState(state => ({messages: [ ...state.messages, state.message]}))
       this.setState(state => ({message: data.payload}))
       console.log(this.state.messages)
+      this.initialFetchOldChat()
     })
   }
 
