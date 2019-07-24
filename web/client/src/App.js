@@ -36,14 +36,14 @@ class App extends Component {
     })
   }
 
-  messageDataItem(m_data) {
+  /*messageDataItem(m_data) {
     console.log("messageDataItem")
     console.log(m_data)
     return (<div>
               <h4>{m_data.username}</h4>
               <p>{m_data.message}</p>
             </div>)
-  }
+  */}
 
   nameChange(event) {
     if (event.target.value) {
@@ -76,17 +76,18 @@ class App extends Component {
       console.log("message sent to server")
     })
   }
-
+//return this.messageDataItem(messageData)
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          <>
-            {this.state.messages.map(messageData => {
-              return this.messageDataItem(messageData)
-            })}
-          </>
+          {this.state.messages.map(messageData => (
+            <>
+              <h4>{messageData.username}</h4>
+              <p>{messageData.message}</p>
+            </>
+          ))}
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
