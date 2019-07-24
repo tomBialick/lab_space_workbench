@@ -43,7 +43,6 @@ class App extends Component {
       if (responseJson.body[0]) {
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
-        console.log(this.state.messages)
       }
     })
   }
@@ -89,11 +88,12 @@ class App extends Component {
   handleOldChat() {
     return (
         this.state.messages.map(messageData => {
-        return messageData.map(dataItem => (
-          <React.Fragment key={dataItem.message_id}>
-            <h4>{dataItem.username}</h4>
-            <p>{dataItem.message}</p>
-          </React.Fragment>
+          console.log(messageData)
+          return messageData.map(dataItem => (
+            <React.Fragment key={dataItem.message_id}>
+              <h4>{dataItem.username}</h4>
+              <p>{dataItem.message}</p>
+            </React.Fragment>
           )
         )})
       )
@@ -120,7 +120,7 @@ class App extends Component {
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
           <div id = "old-chat-log-area" style={{width:'100%'}}>
-            {this.handleOldChat}
+            {this.handleOldChat()}
           </div>
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
