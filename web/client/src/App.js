@@ -39,6 +39,8 @@ class App extends Component {
   }
 
   messageDataItem(m_data) {
+    console.log("messageDataItem")
+    console.log(m_data)
     return (<div>
               <h4>{m_data.username}</h4>
               <p>{m_data.message}</p>
