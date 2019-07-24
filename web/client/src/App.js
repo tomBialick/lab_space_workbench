@@ -30,10 +30,8 @@ class App extends Component {
       //console.log(responseJson.body)
       //<h4>{messageData.username}</h4>
       if (responseJson.body[0]) {
-        console.log(this.state.messages)
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
-        console.log(this.state.messages)
       }
     })
   }
@@ -84,10 +82,11 @@ class App extends Component {
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          {this.state.messages.map(messageData => {
-            return this.messageDataItem(messageData)
-          })}
-
+          <>
+            {this.state.messages.map(messageData => {
+              return this.messageDataItem(messageData)
+            })}
+          </>
         </div>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
