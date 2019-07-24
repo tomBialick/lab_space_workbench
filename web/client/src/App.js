@@ -19,6 +19,7 @@ class App extends Component {
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);
+    this.handleNewChat = this.handleNewChat.bind(this);
     this.fetchOldChat = this.fetchOldChat.bind(this);
   }
 
@@ -26,7 +27,6 @@ class App extends Component {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on('messages', data => {
-      //this.setState(state => ({messages: [ ...state.messages, state.message]}))
       this.setState(state => ({message: data.payload}))
       this.fetchOldChat()
     })
@@ -34,7 +34,6 @@ class App extends Component {
 
   fetchOldChat() {
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
     fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
       method: 'GET',
       headers: {
@@ -87,7 +86,9 @@ class App extends Component {
   }
 
   handleOldChat() {
-    return(
+    //let dispMessages = this.state.messages
+    //dispMessages.splice(-1, 1)
+    return (
         this.state.messages.map(messageData => {
         return messageData.map(dataItem => (
           <React.Fragment key={dataItem.message_id}>
@@ -99,20 +100,26 @@ class App extends Component {
       )
   }
 
+  handleNewChat() {
+    return (
+      <React.Fragment key={this.state.message.message_id}>
+        <h4>{this.state.message.username}</h4>
+        <p>{this.state.message.message}</p>
+      </React.Fragment>
+    )
+  }
+
 
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
           <div id = "old-chat-log-area" style={{width:'100%'}}>
-            {this.handleOldChat()}
+            {this.handleOldChat}
           </div>
-          <div id = "new-chat-log-area" style={{width:'100%'}}>
-            <React.Fragment key={this.state.message.message_id}>
-              <h4>{this.state.message.username}</h4>
-              <p>{this.state.message.message}</p>
-              </React.Fragment>
-          </div>
+          //<div id = "new-chat-log-area" style={{width:'100%'}}>
+            //{this.handleNewChat}
+          //</div>
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "message-area" style={{width:'100%'}}>
