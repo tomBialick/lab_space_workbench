@@ -99,6 +99,7 @@ class App extends Component {
   }
 
   handleOldChat() {
+    console.log(this.state.messages)
     return(
         this.state.messages.map(messageData => {
         return messageData.map(dataItem => (
