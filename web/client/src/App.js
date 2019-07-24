@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import './App.css';
 
 import socketIOClient from 'socket.io-client';
-let socket
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +22,8 @@ class App extends Component {
 
   componentDidMount() {
     const { endpoint } = this.state;
-    socket = socketIOClient(endpoint);
+    const socket = socketIOClient(endpoint);
+    socket.on('messages', data => this.setState(state => ({messages: [ ...state.messages, data.payload]})))
   }
 
 
@@ -89,7 +89,6 @@ class App extends Component {
   }
 
   render() {
-    socket.on('messages', data => this.setState(state => ({messages: [ ...state.messages, data.payload]})))
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
