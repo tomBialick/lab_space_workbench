@@ -41,7 +41,7 @@ class App extends Component {
       }
     }).then(response => response.json()).then((responseJson) => {
       if (responseJson.body[0]) {
-        jsonData = responseJson.body;
+        let jsonData = responseJson.body;
         jsonData.reverse();
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [jsonData, ...state.messages]}))
