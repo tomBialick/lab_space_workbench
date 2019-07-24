@@ -119,7 +119,7 @@ class App extends Component {
             </label>
             <br />
             <label>Chat:
-              <input type="text" onChange={this.chatChange}/>
+              <input type="text" value={this.state.chat}/>
             </label>
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
