@@ -43,6 +43,7 @@ class App extends Component {
       if (responseJson.body[0]) {
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
+        console.log(this.state.messages)
       }
     })
   }
@@ -86,8 +87,6 @@ class App extends Component {
   }
 
   handleOldChat() {
-    //let dispMessages = this.state.messages
-    //dispMessages.splice(-1, 1)
     return (
         this.state.messages.map(messageData => {
         return messageData.map(dataItem => (
