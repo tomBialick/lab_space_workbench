@@ -19,17 +19,34 @@ class App extends Component {
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);
+    this.initialFetchOldChat = this.initialFetchOldChat.bind(this);
   }
 
   componentDidMount() {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
+    this.initialFetchOldChat()
     socket.on('messages', data => {
       this.setState(state => ({messages: [ ...state.messages, state.message]}))
       this.setState(state => ({message: data.payload}))
     })
   }
 
+  initialFetchOldChat() {
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    this.setState(state => ({updateLogClicked: !state.updateLogClicked}))
+    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then(response => response.json()).then((responseJson) => {
+      if (responseJson.body[0]) {
+        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
+        this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
+      }
+    })
+  }
 
 
   addChat(event) {
@@ -42,23 +59,12 @@ class App extends Component {
           'Content-Type': 'application/json',
       }
     }).then(response => response.json()).then((responseJson) => {
-      //console.log(responseJson.body)
-      //<h4>{messageData.username}</h4>
       if (responseJson.body[0]) {
         this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
         this.setState(state => ({messages: [ ...state.messages, responseJson.body]}))
       }
     })
   }
-
-  /*messageDataItem(m_data) {
-    console.log("messageDataItem")
-    console.log(m_data)
-    return (<div>
-              <h4>{m_data.username}</h4>
-              <p>{m_data.message}</p>
-            </div>)
-  }*/
 
   nameChange(event) {
     if (event.target.value) {
@@ -105,7 +111,6 @@ class App extends Component {
       )
   }
 
-  //{this.handleChat}
 
   render() {
     return (
