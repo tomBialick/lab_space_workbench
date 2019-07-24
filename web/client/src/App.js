@@ -11,19 +11,21 @@ class App extends Component {
       chat: "",
       lastMessageID: 0,
       messages: [],
+      message: "",
       endpoint: 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001'
     }
     this.addChat = this.addChat.bind(this);
     this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
+    this.handleChat = this.handleChat.bind(this);
     //this.messageDataItem = this.messageDataItem.bind(this);
   }
 
   componentDidMount() {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    socket.on('messages', data => this.setState(state => ({messages: [ ...state.messages, data.payload]})))
+    socket.on('messages', data => this.setState(state => ({message: data.payload})))
   }
 
 
@@ -88,18 +90,33 @@ class App extends Component {
     })
   }
 
+  handleChat() {
+    return
+      {
+        this.state.messages.map(messageData => {
+        return messageData.map(dataItem => (
+          <React.Fragment key={dataItem.message_id}>
+            <h4>{dataItem.username}</h4>
+            <p>{dataItem.message}</p>
+          </React.Fragment>
+          )
+        )})
+        (<React.Fragment key={this.state.message.message_id}>
+          <h4>{this.state.message.username}</h4>
+          <p>{this.state.message.message}</p>
+        </React.Fragment>)
+      }
+
+
+
+
+  }
+
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          {this.state.messages.map(messageData => {
-            return messageData.map(dataItem => (
-              <React.Fragment key={dataItem.message_id}>
-                <h4>{dataItem.username}</h4>
-                <p>{dataItem.message}</p>
-              </React.Fragment>
-            ))
-          })}
+          {this.handleChat}
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "message-area" style={{width:'100%'}}>
