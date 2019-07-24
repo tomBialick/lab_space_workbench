@@ -4,6 +4,9 @@ var path = require('path');
 
 let conf_data = require('../config.json');
 
+var socketApi = require('../socketApi');
+var io = socketApi.io;
+
 const promise = require('bluebird');
 const initOptions = {
     promiseLib: promise
@@ -36,6 +39,7 @@ router.post('/chat', function(req, res, next) {
       m_id = data[0].max + 1;
     }
     db.query('INSERT INTO MESSAGES ( MESSAGE_ID, USERNAME, MESSAGE) VALUES ($1, $2, $3)', [m_id, username, message]).then(results => {
+      socketApi.sendNotification('messages', m_id, username, message)
       res.status(200).send("message sent")
     }).catch(error => {
       console.log('ERROR:', error);

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
 
+import socketIOClient from 'socket.io-client';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -8,7 +10,8 @@ class App extends Component {
       name: "",
       chat: "",
       lastMessageID: 0,
-      messages: []
+      messages: [],
+      endpoint: 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001'
     }
     this.addChat = this.addChat.bind(this);
     this.nameChange = this.nameChange.bind(this);
@@ -16,6 +19,13 @@ class App extends Component {
     this.sendChat = this.sendChat.bind(this);
     //this.messageDataItem = this.messageDataItem.bind(this);
   }
+
+  componentDidMount() {
+    const { endpoint } = this.state;
+    const socket = socketIOClient(endpoint);
+  }
+
+
 
   addChat(event) {
     event.preventDefault();
@@ -76,11 +86,11 @@ class App extends Component {
       console.log("message sent to server")
     })
   }
-//return this.messageDataItem(messageData)
+
   render() {
+    socket.on('messages', data => this.setState(state => ({messages: [ ...state.messages, data.payload]})))
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
-        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
           {this.state.messages.map(messageData => {
             return messageData.map(dataItem => (
@@ -91,6 +101,7 @@ class App extends Component {
             ))
           })}
         </div>
+        <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "message-area" style={{width:'100%'}}>
           <form>
             <label>Name:

@@ -42,6 +42,13 @@ httpsServer.on('error', onError);
 httpsServer.on('listening', onListening);
 
 /**
+ * Socket.io
+ */
+var socketApi = require('../socketApi');
+var io = socketApi.io;
+io.attach(httpsServer);
+
+/**
  * Normalize a port into a number, string, or false.
  */
 
@@ -100,5 +107,3 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-
-module.exports = https;
