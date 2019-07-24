@@ -1,14 +1,13 @@
 var socket_io = require('socket.io');
 var io = socket_io();
 var socketApi = {};
-var newChat = false;
 socketApi.io = io;
 
 io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('disconnect', () => {
-    console.log('Client disconnected');
+      console.log('Client disconnected');
   });
 });
 

@@ -88,7 +88,6 @@ class App extends Component {
   handleOldChat() {
     return (
         this.state.messages.map(messageData => {
-          console.log(messageData)
           return messageData.map(dataItem => (
             <React.Fragment key={dataItem.message_id}>
               <h4>{dataItem.username}</h4>
@@ -107,13 +106,6 @@ class App extends Component {
       </React.Fragment>
     )
   }
-/*
-<div id = "new-chat-log-area" style={{width:'100%'}}>
-  {
-    //this.handleNewChat
-  }
-</div>
-*/
 
   render() {
     return (
