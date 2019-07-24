@@ -14,7 +14,7 @@ class App extends Component {
     this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
-    this.messageDataItem = this.messageDataItem.bind(this);
+    //this.messageDataItem = this.messageDataItem.bind(this);
   }
 
   addChat(event) {
