@@ -43,7 +43,7 @@ class App extends Component {
               <h4>{m_data.username}</h4>
               <p>{m_data.message}</p>
             </div>)
-  */}
+  }*/
 
   nameChange(event) {
     if (event.target.value) {
