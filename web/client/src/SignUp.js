@@ -13,6 +13,7 @@ class SignUp extends Component {
     this.passwordChange = this.passwordChange.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
+    this.handleGoBack = this.handleGoBack.bind(this);
   }
 
   usernameChange(event) {
@@ -36,6 +37,11 @@ class SignUp extends Component {
         this.setState({passwordMatch: false})
       }
     }
+  }
+
+  handleSignUp(event) {
+    event.preventDefault();
+    this.props.accountMade();
   }
 
   handleSignUp(event) {
@@ -100,7 +106,7 @@ class SignUp extends Component {
         </label>
         {passwordStatus}
         <button onClick={(e) => this.handleSignUp(e)}>Sign Up</button>
-          <button onClick={(e) => this.handleSignUp(e)}>Go Back</button>
+          <button onClick={(e) => this.handleGoBack(e)}>Go Back</button>
       </form>
       </div>
     )
