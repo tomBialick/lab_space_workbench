@@ -36,8 +36,8 @@ class Login extends Component {
       },
       body: data_json
     }).then(response => {
-      if (res.body.results.status === "failure") {
-        alert(res.body.results.reason)
+      if (response.body.results.status === "failure") {
+        alert(response.body.results.reason)
       }
       else {
         this.props.login(true, user);
