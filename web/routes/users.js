@@ -16,17 +16,17 @@ router.post('/createUser', function(req, res, next) {
       res.status(400).json({body:{issue:"Username Already Exists"}});
     }
     else {
-      db.query( 'SELECT * FROM USERS ORDER BY ID DESC').then(results => {
+      db.query( 'SELECT MAX(MESSAGE_ID) FROM USERS ORDER BY ID DESC').then(results => {
         if (!results[0]) {
           user_id = 1;
         }
         else {
-          user_id = results[0].id + 1;
+          user_id = results[0].max + 1;
         }
 
         let password = req.body.password;
 
-        db.query('INSERT INTO APPRAISAL ( ID, USERNAME, PASSWORD) VALUES ($1, $2, $3)', [user_id, username, password]).then(results => {
+        db.query('INSERT INTO USERS ( ID, USERNAME, PASSWORD) VALUES ($1, $2, $3)', [user_id, username, password]).then(results => {
           res.status(200).send("User Profile Successfully Created")
         }).catch(error => {
           console.log('ERROR:', error);
