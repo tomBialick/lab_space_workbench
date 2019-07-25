@@ -12,19 +12,20 @@ class App extends Component {
     }
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.pickSite = this.pickSite.bind(this);
   }
 
   handleLogin(validated, user) {
     if (validated) {
       this.setState({loggedIn: true, username: user})
     }
-  }.bind(this)
+  }
 
   handleLogout() {
     if (this.state.loggedIn) {
       this.setState({loggedIn: false})
     }
-  }.bind(this)
+  }
 
   pickSite() {
     if(this.state.loggedIn) {
@@ -33,7 +34,7 @@ class App extends Component {
     else {
       return <Login login={this.handleLogin}/>
     }
-  }.bind(this)
+  }
 
   render() {
     return (

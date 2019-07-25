@@ -16,6 +16,7 @@ class Login extends Component {
     this.passwordChange = this.passwordChange.bind(this);
     this.signInOrCreateAccount = this.signInOrCreateAccount.bind(this);
     this.handleCreateAccount = this.handleCreateAccount.bind(this);
+    this.handleAccountCreated = this.handleAccountCreated.bind(this);
   }
 
   handleSignIn(event) {
@@ -63,7 +64,7 @@ class Login extends Component {
 
   handleAccountCreated() {
     this.setState({hasAccount: true})
-  }.bind(this)
+  }
 
   signInOrCreateAccount() {
     if (this.state.hasAccount) {
