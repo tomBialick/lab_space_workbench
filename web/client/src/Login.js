@@ -29,7 +29,7 @@ class Login extends Component {
     };
     let data_json = JSON.stringify(data)
 
-    fetch( hosturl + '/users/createUser', {
+    fetch( hosturl + '/users/auth', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
