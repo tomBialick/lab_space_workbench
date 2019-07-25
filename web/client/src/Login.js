@@ -35,9 +35,9 @@ class Login extends Component {
           'Content-Type': 'application/json',
       },
       body: data_json
-    }).then(response => {
-      if (response.body.results.status === "failure") {
-        alert(response.body.results.reason)
+    }).then(response => response.json()).then((responseJson) => {
+      if (responseJson.body.results.status === "failure") {
+        alert(responseJson.body.results.reason)
       }
       else {
         this.props.login(true, user);

@@ -55,9 +55,9 @@ class SignUp extends Component {
               'Content-Type': 'application/json',
           },
           body: data_json
-        }).then(response => {
-          if (res.body.issue) {
-            alert(res.body.issue)
+        }).then(response => response.json()).then((responseJson) => {
+          if (responseJson.body.issue) {
+            alert(responseJson.body.issue)
           }
           else {
             this.props.accountMade();
