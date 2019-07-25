@@ -27,7 +27,7 @@ router.post('/createUser', function(req, res, next) {
         let password = req.body.password;
 
         db.query('INSERT INTO USERS (ID, USERNAME, PASSWORD) VALUES ($1, $2, $3)', [user_id, username, password]).then(results => {
-          res.status(200).send("User Profile Successfully Created")
+          res.status(200).json({body:{result:"User Profile Successfully Created"}})
         }).catch(error => {
           console.log('ERROR:', error);
           res.status(400).json({body:{issue:"Bad Request"}});

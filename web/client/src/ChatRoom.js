@@ -14,7 +14,6 @@ class ChatRoom extends Component {
       endpoint: 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001'
     }
     this.addChat = this.addChat.bind(this);
-    this.nameChange = this.nameChange.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);

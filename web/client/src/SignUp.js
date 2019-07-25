@@ -100,6 +100,7 @@ class SignUp extends Component {
         </label>
         {passwordStatus}
         <button onClick={(e) => this.handleSignUp(e)}>Sign Up</button>
+          <button onClick={(e) => this.handleSignUp(e)}>Go Back</button>
       </form>
       </div>
     )
