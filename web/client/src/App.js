@@ -16,9 +16,6 @@ class App extends Component {
   }
 
   handleLogin(validated, user) {
-    console.log("handleLogin")
-    console.log(validated)
-    console.log(user)
     if (validated) {
       this.setState({loggedIn: true, username: user})
     }
@@ -29,11 +26,10 @@ class App extends Component {
       this.setState({loggedIn: false})
     }
   }
-
+//logout={this.handleLogout} 
   pickSite() {
     if(this.state.loggedIn) {
-      console.log("switching to chat room");
-      return <ChatRoom logout={this.handleLogout()} user={this.state.username}/>
+      return <ChatRoom user={this.state.username}/>
     }
     else {
       return <Login login={this.handleLogin}/>
