@@ -2,24 +2,11 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 
+var db = require('../db/db_utility.js')
 let conf_data = require('../config.json');
 
 var socketApi = require('../socketApi');
 var io = socketApi.io;
-
-const promise = require('bluebird');
-const initOptions = {
-    promiseLib: promise
-};
-
-const pgp = require('pg-promise')(initOptions);
-const db = pgp({
-  user: conf_data["postgresql"]["username"],
-  host: conf_data["postgresql"]["host"],
-  database: conf_data["postgresql"]["db"],
-  password: conf_data["postgresql"]["password"],
-  port: conf_data["postgresql"]["port"],
-});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
