@@ -39,7 +39,7 @@ class SignUp extends Component {
     }
   }
 
-  handleSignUp(event) {
+  handleGoBack(event) {
     event.preventDefault();
     this.props.accountMade();
   }
