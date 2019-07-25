@@ -12,7 +12,7 @@ router.post('/createUser', function(req, res, next) {
   let username = req.body.username;
 
   db.query('SELECT * FROM USERS WHERE USERNAME = $1', [username]).then(data => {
-    if (results[0]) {
+    if (data[0]) {
       res.status(400).json({body:{issue:"Username Already Exists"}});
     }
     else {
