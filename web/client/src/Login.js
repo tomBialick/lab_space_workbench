@@ -63,7 +63,7 @@ class Login extends Component {
 
   handleAccountCreated() {
     this.setState({hasAccount: true})
-  }
+  }.bind(this)
 
   signInOrCreateAccount() {
     if (this.state.hasAccount) {
