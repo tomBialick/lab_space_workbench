@@ -37,7 +37,7 @@ class ChatRoom extends Component {
     })
   }
 
-  fetchInitialChat() {
+  fetchOldChat() {
     let stoppingPoint;
     if (this.state.firstMessageLoadedID === -1) {
       this.setState({firstMessageLoadedID: 0})
@@ -66,7 +66,7 @@ class ChatRoom extends Component {
     })
   }
 
-  fetchOldChat() {
+  fetchInitialChat() {
     if (this.state.firstMessageLoadedID === -1) {
       this.setState({firstMessageLoadedID: 0})
     }
