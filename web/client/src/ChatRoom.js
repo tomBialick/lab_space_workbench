@@ -9,6 +9,7 @@ class ChatRoom extends Component {
     this.state = {
       chat: "",
       lastMessageID: 0,
+      firstMessageLoadedID: -1,
       messages: [],
       message: "",
       endpoint: 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001'
@@ -25,6 +26,9 @@ class ChatRoom extends Component {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on('messages', data => {
+      if (this.state.firstMessageLoadedID === -1) {
+        this.setState({firstMessageLoadedID: data.payload.message_id})
+      }
       this.setState(state => ({messages: [[state.message], ...state.messages]}))
       this.setState(state => ({message: data.payload}))
       this.setState({lastMessageID: data.payload.message_id})
@@ -34,8 +38,16 @@ class ChatRoom extends Component {
   }
 
   fetchOldChat() {
+    let stoppingPoint;
+    if (this.state.firstMessageLoadedID === -1) {
+      this.setState({firstMessageLoadedID: 0})
+      stoppingPoint = this.state.lastMessageID;
+    }
+    if (this.state.firstMessageLoadedID >= 1) {
+      stoppingPoint = this.state.firstMessageLoadedID;
+    }
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
+    fetch( hosturl + '/chat?messageID=' + stoppingPoint, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
@@ -46,6 +58,9 @@ class ChatRoom extends Component {
         let jsonData = responseJson.body;
         jsonData.reverse();
         this.setState(state => ({messages: [jsonData, ...state.messages]}))
+        if (this.state.firstMessageLoadedID !== 0) {
+          this.setState({firstMessageLoadedID: 0})
+        }
       }
     })
   }
@@ -98,6 +113,9 @@ class ChatRoom extends Component {
   }
 
   handleNewChat() {
+    if (!this.state.message) {
+      return
+    }
     return (
       <React.Fragment key={this.state.message.message_id}>
         <div style={{border: '2px solid red'}}>
