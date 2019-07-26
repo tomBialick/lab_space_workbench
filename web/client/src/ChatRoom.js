@@ -20,11 +20,13 @@ class ChatRoom extends Component {
     this.handleOldChat = this.handleOldChat.bind(this);
     this.handleNewChat = this.handleNewChat.bind(this);
     this.fetchOldChat = this.fetchOldChat.bind(this);
+    this.fetchInitialChat = this.fetchInitialChat.bind(this);
   }
 
   componentDidMount() {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
+    this.fetchInitialChat();
     socket.on('messages', data => {
       if (this.state.firstMessageLoadedID === -1) {
         this.setState({firstMessageLoadedID: data.payload.message_id})
@@ -32,12 +34,10 @@ class ChatRoom extends Component {
       this.setState(state => ({messages: [[state.message], ...state.messages]}))
       this.setState(state => ({message: data.payload}))
       this.setState({lastMessageID: data.payload.message_id})
-
-      //this.fetchOldChat()
     })
   }
 
-  fetchOldChat() {
+  fetchInitialChat() {
     let stoppingPoint;
     if (this.state.firstMessageLoadedID === -1) {
       this.setState({firstMessageLoadedID: 0})
@@ -46,8 +46,33 @@ class ChatRoom extends Component {
     else {
       stoppingPoint = this.state.firstMessageLoadedID;
     }
+
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
-    fetch( hosturl + '/chat?messageID=' + stoppingPoint, {
+    fetch( hosturl + '/chat/old?messageID=' + stoppingPoint, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then(response => response.json()).then((responseJson) => {
+      if (responseJson.body[0]) {
+        this.setState({lastMessageID: responseJson.body[responseJson.body.length - 1].message_id})
+        let jsonData = responseJson.body;
+        jsonData.reverse();
+        this.setState(state => ({messages: [jsonData, ...state.messages]}))
+        if (this.state.firstMessageLoadedID !== 0) {
+          this.setState({firstMessageLoadedID: 0})
+        }
+      }
+    })
+  }
+
+  fetchOldChat() {
+    if (this.state.firstMessageLoadedID === -1) {
+      this.setState({firstMessageLoadedID: 0})
+    }
+
+    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
