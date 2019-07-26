@@ -25,8 +25,11 @@ class ChatRoom extends Component {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on('messages', data => {
+      this.setState(state => ({messages: [[state.message], ...state.messages]}))
       this.setState(state => ({message: data.payload}))
-      this.fetchOldChat()
+      this.setState({lastMessageID: data.payload.message_id})
+
+      //this.fetchOldChat()
     })
   }
 
@@ -97,8 +100,10 @@ class ChatRoom extends Component {
   handleNewChat() {
     return (
       <React.Fragment key={this.state.message.message_id}>
-        <h4>{this.state.message.username}</h4>
-        <p>{this.state.message.message}</p>
+        <div style={{border: '2px solid red'}}>
+          <h4>{this.state.message.username}</h4>
+          <p>{this.state.message.message}</p>
+        </div>
       </React.Fragment>
     )
   }
@@ -116,6 +121,9 @@ class ChatRoom extends Component {
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
+          <div id = "new-chat-log-area" style={{width:'100%'}}>
+            {this.handleNewChat()}
+          </div>
           <div id = "old-chat-log-area" style={{width:'100%'}}>
             {this.handleOldChat()}
           </div>
