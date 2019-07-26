@@ -43,7 +43,7 @@ class ChatRoom extends Component {
       this.setState({firstMessageLoadedID: 0})
       stoppingPoint = this.state.lastMessageID;
     }
-    if (this.state.firstMessageLoadedID >= 1) {
+    else {
       stoppingPoint = this.state.firstMessageLoadedID;
     }
     let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
