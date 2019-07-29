@@ -23,7 +23,7 @@ class Login extends Component {
     event.preventDefault();
     let user = this.state.username
     let pass = this.state.password
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    let hosturl = 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001';
     let data = {
       "username": user,
       "password": pass
