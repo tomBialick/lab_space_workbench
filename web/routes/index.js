@@ -50,10 +50,6 @@ router.post('/chat', function(req, res, next) {
 
 /* GET all chats from messageID to newest */
 router.get('/chat', function(req, res, next) {
-  if (typeof(req.query.messageID) !== "number") {
-    console.log('ERROR:', error);
-    res.status(400).send("Bad Request");
-  }
   let messageQuery = req.query.messageID;
   db.query('SELECT * FROM MESSAGES WHERE MESSAGE_ID > $1', [messageQuery]).then(results => {
     res.status(200).json({body : results})
@@ -61,15 +57,10 @@ router.get('/chat', function(req, res, next) {
     console.log('ERROR:', error);
     res.status(400).send("Bad Request");
   })
-
 });
 
 /**/
 router.get('/chat/old', function(req, res, next) {
-  if (typeof(req.query.messageID) !== "number") {
-    console.log('ERROR:', error);
-    res.status(400).send("Bad Request");
-  }
   let messageQuery = req.query.messageID;
   db.query('SELECT * FROM MESSAGES WHERE MESSAGE_ID < $1', [messageQuery]).then(results => {
     res.status(200).json({body : results})
