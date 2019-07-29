@@ -161,40 +161,41 @@ class ChatRoom extends Component {
     return (
         this.state.messages.map(messageData => {
           return messageData.map(dataItem => {
-            if (!dataItem.attachment_location) {
-              if (dataItem.message) {
-                return (
-                  <React.Fragment key={dataItem.message_id}>
-                    <div style={{border: '2px solid blue'}}>
-                      <h4>{dataItem.username}</h4>
-                      <p>{dataItem.message}</p>
-                    </div>
-                  </React.Fragment>
-                )
+            if (dataItem) {
+              if (!dataItem.attachment_location) {
+                if (dataItem.message) {
+                  return (
+                    <React.Fragment key={dataItem.message_id}>
+                      <div style={{border: '2px solid blue'}}>
+                        <h4>{dataItem.username}</h4>
+                        <p>{dataItem.message}</p>
+                      </div>
+                    </React.Fragment>
+                  )
+                }
               }
-            }
-            else {
-              if (dataItem.type.includes('image')) {
-                return (
-                  <React.Fragment key={dataItem.message_id}>
-                    <div style={{border: '2px solid blue'}}>
-                      <h4>{dataItem.username}</h4>
-                      <img src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
-                    </div>
-                  </React.Fragment>
-                )
+              else {
+                if (dataItem.type.includes('image')) {
+                  return (
+                    <React.Fragment key={dataItem.message_id}>
+                      <div style={{border: '2px solid blue'}}>
+                        <h4>{dataItem.username}</h4>
+                        <img src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                      </div>
+                    </React.Fragment>
+                  )
+                }
+                else if (dataItem.type.includes('video')) {
+                  return (
+                    <React.Fragment key={dataItem.message_id}>
+                      <div style={{border: '2px solid blue'}}>
+                        <h4>{dataItem.username}</h4>
+                        <video src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                      </div>
+                    </React.Fragment>
+                  )
+                }
               }
-              else if (dataItem.type.includes('video')) {
-                return (
-                  <React.Fragment key={dataItem.message_id}>
-                    <div style={{border: '2px solid blue'}}>
-                      <h4>{dataItem.username}</h4>
-                      <video src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
-                    </div>
-                  </React.Fragment>
-                )
-              }
-
             }
           }
         )})
@@ -214,14 +215,26 @@ class ChatRoom extends Component {
         )
       }
       else {
-        return (
-          <React.Fragment key={this.state.message.message_id}>
-            <div style={{border: '2px solid red'}}>
-              <h4>{this.state.message.username}</h4>
-              <img src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
-            </div>
-          </React.Fragment>
-        )
+        if (this.state.message.type.includes('image')) {
+          return (
+            <React.Fragment key={this.state.message.message_id}>
+              <div style={{border: '2px solid red'}}>
+                <h4>{this.state.message.username}</h4>
+                <img src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+              </div>
+            </React.Fragment>
+          )
+        }
+        else if (this.state.message.type.includes('video')) {
+          return (
+            <React.Fragment key={this.state.message.message_id}>
+              <div style={{border: '2px solid red'}}>
+                <h4>{this.state.message.username}</h4>
+                <video src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+              </div>
+            </React.Fragment>
+          )
+        }
       }
     }
   }
