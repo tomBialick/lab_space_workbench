@@ -18,6 +18,7 @@ class ChatRoom extends Component {
     }
     this.addChat = this.addChat.bind(this);
     this.chatChange = this.chatChange.bind(this);
+    this.fileChange = this.fileChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
     this.sendFile = this.sendFile.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);
@@ -114,6 +115,7 @@ class ChatRoom extends Component {
 
   fileChange(event) {
     if (event.target.files) {
+      console.log("file changed?")
       this.setState({attachment: event.target.files[0]})
     }
   }
@@ -144,7 +146,9 @@ class ChatRoom extends Component {
     let form = new FormData();
     form.append('username', this.props.user);
     form.append('file', this.state.attachment)
-    fetch( hosturl + '/file', {
+    console.log("uploading this file:");
+    console.log(this.state.attachment)
+    fetch( this.state.host + '/file', {
       method: 'POST',
       mode: 'no-cors',
       body: form
@@ -220,7 +224,7 @@ class ChatRoom extends Component {
           </form>
           <form id="file-form">
             <label>File:
-              <input type="file" ref="filebox"/>
+              <input type="file" onChange={this.fileChange} ref="filebox"/>
             </label>
             <button onClick={(e) => this.sendFile(e)}>Submit</button>
           </form>
