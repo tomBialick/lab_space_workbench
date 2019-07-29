@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './ChatRoom.css';
+import FormData from 'FormData';
 
 import socketIOClient from 'socket.io-client';
 
@@ -115,7 +116,6 @@ class ChatRoom extends Component {
 
   fileChange(event) {
     if (event.target.files) {
-      console.log("file changed?")
       this.setState({attachment: event.target.files[0]})
     }
   }
@@ -146,8 +146,6 @@ class ChatRoom extends Component {
     let form = new FormData();
     form.append('username', this.props.user);
     form.append('file', this.state.attachment)
-    console.log("uploading this file:");
-    console.log(this.state.attachment)
     fetch( this.state.host + '/file', {
       method: 'POST',
       mode: 'no-cors',
