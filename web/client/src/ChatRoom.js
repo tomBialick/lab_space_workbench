@@ -121,7 +121,7 @@ class ChatRoom extends Component {
 
   sendChat(event) {
     event.preventDefault();
-    if (this.stat.chat) {
+    if (this.state.chat) {
       let hosturl = this.state.host;
       let data = {
         "username": this.props.user,
