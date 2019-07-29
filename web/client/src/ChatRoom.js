@@ -121,23 +121,25 @@ class ChatRoom extends Component {
 
   sendChat(event) {
     event.preventDefault();
-    let hosturl = this.state.host;
-    let data = {
-      "username": this.props.user,
-      "message": this.state.chat
-    };
-    let data_json = JSON.stringify(data)
+    if (this.stat.chat) {
+      let hosturl = this.state.host;
+      let data = {
+        "username": this.props.user,
+        "message": this.state.chat
+      };
+      let data_json = JSON.stringify(data)
 
-    fetch( hosturl + '/chat', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: data_json
-    }).then(response => {
-      this.setState({chat: ""})
-      this.refs.chatbox.value = '';
-    })
+      fetch( hosturl + '/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: data_json
+      }).then(response => {
+        this.setState({chat: ""})
+        this.refs.chatbox.value = '';
+      })
+    }
   }
 
   sendFile(event) {
@@ -159,22 +161,24 @@ class ChatRoom extends Component {
     return (
         this.state.messages.map(messageData => {
           return messageData.map(dataItem => {
-            if(!dataItem.type) {
-              return (
-                <React.Fragment key={dataItem.message_id}>
-                  <div style={{border: '2px solid red'}}>
-                    <h4>{dataItem.username}</h4>
-                    <p>{dataItem.message}</p>
-                  </div>
-                </React.Fragment>
-              )
+            if (!dataItem.type) {
+              if (dataItem.message) {
+                return (
+                  <React.Fragment key={dataItem.message_id}>
+                    <div style={{border: '2px solid blue'}}>
+                      <h4>{dataItem.username}</h4>
+                      <p>{dataItem.message}</p>
+                    </div>
+                  </React.Fragment>
+                )
+              }
             }
             else {
               return (
                 <React.Fragment key={dataItem.message_id}>
-                  <div style={{border: '2px solid red'}}>
+                  <div style={{border: '2px solid blue'}}>
                     <h4>{dataItem.username}</h4>
-                    <img src={dataItem.url} alt={dataItem.fileName} />
+                    <img src={dataItem.url} alt={dataItem.fileName} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
                   </div>
                 </React.Fragment>
               )
@@ -189,7 +193,7 @@ class ChatRoom extends Component {
       if (!this.state.message.type) {
         return (
           <React.Fragment key={this.state.message.message_id}>
-            <div style={{border: '2px solid blue'}}>
+            <div style={{border: '2px solid red'}}>
               <h4>{this.state.message.username}</h4>
               <p>{this.state.message.message}</p>
             </div>
@@ -199,7 +203,7 @@ class ChatRoom extends Component {
       else {
         return (
           <React.Fragment key={this.state.message.message_id}>
-            <div style={{border: '2px solid blue'}}>
+            <div style={{border: '2px solid red'}}>
               <h4>{this.state.message.username}</h4>
               <img src={this.state.message.url} alt={this.state.message.fileName} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
             </div>
