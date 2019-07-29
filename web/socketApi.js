@@ -12,14 +12,27 @@ io.on('connection', (socket) => {
 });
 
 socketApi.sendNotification = function(event, message_id, username, message) {
-    io.sockets.emit(event, {payload: {
-                                        message_id: message_id,
-                                        username: username,
-                                        message: message
-                                      }
-                            }
-                    );
+    io.sockets.emit(event, {
+        payload: {
+          message_id: message_id,
+          username: username,
+          message: message
+        }
+      }
+    );
+}
 
+socketApi.sendAttachementNotification = function(event, message_id, username, fileName, fileURL) {
+    io.sockets.emit(event, {
+        payload: {
+          message_id: message_id,
+          type: "file",
+          username: username,
+          fileName: fileName,
+          url: fileURL
+        }
+      }
+    );
 }
 
 module.exports = socketApi;

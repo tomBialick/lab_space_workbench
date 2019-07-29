@@ -35,6 +35,14 @@ class ChatRoom extends Component {
       this.setState(state => ({message: data.payload}))
       this.setState({lastMessageID: data.payload.message_id})
     })
+    socket.on('attachment', data => {
+      if (this.state.firstMessageLoadedID === -1) {
+        this.setState({firstMessageLoadedID: data.payload.message_id})
+      }
+      this.setState(state => ({messages: [[state.message], ...state.messages]}))
+      this.setState(state => ({message: data.payload}))
+      this.setState({lastMessageID: data.payload.message_id})
+    })
   }
 
   fetchOldChat() {
@@ -125,30 +133,55 @@ class ChatRoom extends Component {
   handleOldChat() {
     return (
         this.state.messages.map(messageData => {
-          return messageData.map(dataItem => (
-            <React.Fragment key={dataItem.message_id}>
-              <div style={{border: '2px solid red'}}>
-                <h4>{dataItem.username}</h4>
-                <p>{dataItem.message}</p>
-              </div>
-            </React.Fragment>
-          )
+          return messageData.map(dataItem => {
+            if(!dataItem.type) {
+              return (
+                <React.Fragment key={dataItem.message_id}>
+                  <div style={{border: '2px solid red'}}>
+                    <h4>{dataItem.username}</h4>
+                    <p>{dataItem.message}</p>
+                  </div>
+                </React.Fragment>
+              )
+            }
+            else {
+              return (
+                <React.Fragment key={dataItem.message_id}>
+                  <div style={{border: '2px solid red'}}>
+                    <h4>{dataItem.username}</h4>
+                    <img src={dataItem.url} alt={dataItem.fileName} />
+                  </div>
+                </React.Fragment>
+              )
+            }
+          }
         )})
       )
   }
 
   handleNewChat() {
-    if (!this.state.message) {
-      return
+    if (this.state.message) {
+      if (!this.state.message.type) {
+        return (
+          <React.Fragment key={this.state.message.message_id}>
+            <div style={{border: '2px solid blue'}}>
+              <h4>{this.state.message.username}</h4>
+              <p>{this.state.message.message}</p>
+            </div>
+          </React.Fragment>
+        )
+      }
+      else {
+        return (
+          <React.Fragment key={this.state.message.message_id}>
+            <div style={{border: '2px solid blue'}}>
+              <h4>{this.state.message.username}</h4>
+              <img src={this.state.message.url} alt={this.state.message.fileName} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+            </div>
+          </React.Fragment>
+        )
+      }
     }
-    return (
-      <React.Fragment key={this.state.message.message_id}>
-        <div style={{border: '2px solid red'}}>
-          <h4>{this.state.message.username}</h4>
-          <p>{this.state.message.message}</p>
-        </div>
-      </React.Fragment>
-    )
   }
 
   render() {
@@ -161,13 +194,19 @@ class ChatRoom extends Component {
             </label>
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
+          <form id="file-form">
+            <label>Chat:
+              <input type="file" />
+            </label>
+            <button onClick={(e) => this.sendFile(e)}>Submit</button>
+          </form>
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
         <div id = "chat-log-area" style={{width:'100%'}}>
-          <div id = "new-chat-log-area" style={{width:'100%'}}>
+          <div id = "new-chat-log-area">
             {this.handleNewChat()}
           </div>
-          <div id = "old-chat-log-area" style={{width:'100%'}}>
+          <div id = "old-chat-log-area">
             {this.handleOldChat()}
           </div>
         </div>

@@ -13,13 +13,8 @@
     "password": "",
     "port": "5432"
   },
-  "mongodb": {
-    "user": "ec2-user",
-    "pwd": "",
-    "db": "admin"
-  },
   "s3": {
-    "bucketName": "",
-    "folder": ""
+    "bucketName": "tomchatpics",
+    "folder": "files"
   }
 }

@@ -8,6 +8,16 @@ let conf_data = require('../config.json');
 var socketApi = require('../socketApi');
 var io = socketApi.io;
 
+const fs = require('fs');
+const AWS = require('aws-sdk');
+//CHANGE THESE KEYS FOR S3 ACCESS
+const s3 = new AWS.S3({
+  accessKeyId: '',
+  secretAccessKey: '',
+  region: 'us-east-2'
+});
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(path.join(__dirname + '/..', '/client/build', 'index.html'));
@@ -68,7 +78,71 @@ router.get('/chat/old', function(req, res, next) {
     console.log('ERROR:', error);
     res.status(400).send("Bad Request");
   })
-
 });
+
+router.post('/file', function(req, res, next) {
+  if (Object.keys(req.files).length == 0) {
+    return res.status(400).send('Error uploading file');
+  }
+  let m_id;
+  let username = req.body.username;
+  let message = req.body.message;
+  let fileObj = req.files.file;
+  let fileName = fileObj.name;
+  let id = req.body.id;
+  let keyName = conf_data["s3"]["folder"] + '/' + id + "_" + fileName;
+
+  fileObj.mv('./resources/' + fileName, function(err) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Internal Error Storing File");
+    }
+    let file_loc = './resources/' + fileName;
+    fs.readFile(file_loc, (err, data) => {
+       if (err) throw err;
+       const params = {
+           Bucket: conf_data["s3"]["bucketName"], // pass your bucket name
+           Key: keyName, // file will be saved as clippybucket2019/<keyName>
+           ACL: 'public-read',
+           Body: data
+       };
+       s3.upload(params, function(s3Err, data) {
+         if (s3Err){
+           console.log('ERROR:', s3Err);
+           res.status(500).send("Error Adding File to S3 Bucket");
+         }
+         else {
+           let file_location = data.Location;
+           db.query('SELECT MAX(MESSAGE_ID) FROM MESSAGES').then(data => {
+             if (!data[0]) {
+               m_id = 0;
+             }
+             else {
+               m_id = data[0].max + 1;
+             }
+             db.query( 'INSERT INTO MESSAGES (MESSAGE_ID, USERNAME, ATTACHMENT_NAME, ATTACHMENT_LOCATION)', [m_id, username, keyName, file_location])
+             .then(results => {
+               console.log(`File uploaded successfully at ${data.Location}`)
+               fs.unlink(file_loc, (err) => {
+                 if (err) {
+                   console.log('ERROR:', err);
+                 }
+                 socketApi.sendAttachementNotification('attachment', m_id, username, keyName, file_location)
+                 res.status(200).send("File successully uploaded");
+               })
+             })
+             .catch(error => {
+               console.log('ERROR:', error);
+               res.status(500).send("Error Adding File to Database");
+             });
+           }).catch(error => {
+             console.log('ERROR:', error);
+             res.status(500).send("Error Adding File to Database");
+           });
+         }
+       });
+     });
+  });
+})
 
 module.exports = router;
