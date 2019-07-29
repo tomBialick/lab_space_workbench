@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './ChatRoom.css';
-import FormData from 'FormData';
 
 import socketIOClient from 'socket.io-client';
 
