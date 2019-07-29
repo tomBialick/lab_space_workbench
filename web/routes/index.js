@@ -76,11 +76,9 @@ router.post('/file', function(req, res, next) {
   }
   let m_id;
   let username = req.body.username;
-  let message = req.body.message;
   let fileObj = req.files.file;
   let fileName = fileObj.name;
-  let id = req.body.id;
-  let keyName = conf_data["s3"]["folder"] + '/' + id + "_" + fileName;
+  let keyName = conf_data["s3"]["folder"] + '/' +username + "_" + fileName;
 
   fileObj.mv('./resources/' + fileName, function(err) {
     if (err) {

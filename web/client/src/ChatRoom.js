@@ -11,6 +11,7 @@ class ChatRoom extends Component {
       lastMessageID: 0,
       firstMessageLoadedID: -1,
       messages: [],
+      attachment: null,
       message: "",
       endpoint: 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/',
       host: 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001'
@@ -18,6 +19,7 @@ class ChatRoom extends Component {
     this.addChat = this.addChat.bind(this);
     this.chatChange = this.chatChange.bind(this);
     this.sendChat = this.sendChat.bind(this);
+    this.sendFile = this.sendFile.bind(this);
     this.handleOldChat = this.handleOldChat.bind(this);
     this.handleNewChat = this.handleNewChat.bind(this);
     this.fetchOldChat = this.fetchOldChat.bind(this);
@@ -110,6 +112,12 @@ class ChatRoom extends Component {
     }
   }
 
+  fileChange(event) {
+    if (event.target.files) {
+      this.setState({attachment: event.target.files[0]})
+    }
+  }
+
   sendChat(event) {
     event.preventDefault();
     let hosturl = this.state.host;
@@ -128,6 +136,21 @@ class ChatRoom extends Component {
     }).then(response => {
       this.setState({chat: ""})
       this.refs.chatbox.value = '';
+    })
+  }
+
+  sendFile(event) {
+    event.preventDefault();
+    let form = new FormData();
+    form.append('username', this.props.user);
+    form.append('file', this.state.attachment)
+    fetch( hosturl + '/file', {
+      method: 'POST',
+      mode: 'no-cors',
+      body: form
+    }).then(response => {
+      this.setState({attachment: null})
+      this.refs.filebox.value = null;
     })
   }
 
@@ -196,8 +219,8 @@ class ChatRoom extends Component {
             <button onClick={(e) => this.sendChat(e)}>Send</button>
           </form>
           <form id="file-form">
-            <label>Chat:
-              <input type="file" />
+            <label>File:
+              <input type="file" ref="filebox"/>
             </label>
             <button onClick={(e) => this.sendFile(e)}>Submit</button>
           </form>
