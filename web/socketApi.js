@@ -22,11 +22,11 @@ socketApi.sendNotification = function(event, message_id, username, message) {
     );
 }
 
-socketApi.sendAttachementNotification = function(event, message_id, username, fileName, fileURL) {
+socketApi.sendAttachementNotification = function(event, message_id, type, username, fileName, fileURL) {
     io.sockets.emit(event, {
         payload: {
           message_id: message_id,
-          type: "file",
+          type: type,
           username: username,
           attachment_name: fileName,
           attachment_location: fileURL

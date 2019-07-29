@@ -174,14 +174,27 @@ class ChatRoom extends Component {
               }
             }
             else {
-              return (
-                <React.Fragment key={dataItem.message_id}>
-                  <div style={{border: '2px solid blue'}}>
-                    <h4>{dataItem.username}</h4>
-                    <img src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
-                  </div>
-                </React.Fragment>
-              )
+              if (dataItem.type.includes('image')) {
+                return (
+                  <React.Fragment key={dataItem.message_id}>
+                    <div style={{border: '2px solid blue'}}>
+                      <h4>{dataItem.username}</h4>
+                      <img src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                    </div>
+                  </React.Fragment>
+                )
+              }
+              else if (dataItem.type.includes('video')) {
+                return (
+                  <React.Fragment key={dataItem.message_id}>
+                    <div style={{border: '2px solid blue'}}>
+                      <h4>{dataItem.username}</h4>
+                      <video src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                    </div>
+                  </React.Fragment>
+                )
+              }
+
             }
           }
         )})
