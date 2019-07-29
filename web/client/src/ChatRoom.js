@@ -12,7 +12,7 @@ class ChatRoom extends Component {
       firstMessageLoadedID: -1,
       messages: [],
       message: "",
-      endpoint: 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001'
+      endpoint: 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/'
     }
     this.addChat = this.addChat.bind(this);
     this.chatChange = this.chatChange.bind(this);
@@ -55,7 +55,7 @@ class ChatRoom extends Component {
       stoppingPoint = this.state.firstMessageLoadedID;
     }
 
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    let hosturl = 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/';
     fetch( hosturl + '/chat/old?messageID=' + stoppingPoint, {
       method: 'GET',
       headers: {
@@ -79,7 +79,7 @@ class ChatRoom extends Component {
       this.setState({firstMessageLoadedID: 0})
     }
 
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    let hosturl = 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/';
     fetch( hosturl + '/chat?messageID=' + this.state.lastMessageID, {
       method: 'GET',
       headers: {
@@ -111,7 +111,7 @@ class ChatRoom extends Component {
 
   sendChat(event) {
     event.preventDefault();
-    let hosturl = 'https://ec2-13-58-163-102.us-east-2.compute.amazonaws.com:3001';
+    let hosturl = 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/';
     let data = {
       "username": this.props.user,
       "message": this.state.chat
