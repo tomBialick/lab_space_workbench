@@ -24,8 +24,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST a new chat */
-router.post('/chat', [check('username').isLength({min:1}).trim().escape(),
-                      check('message').isLength({min:1}).escape()], function(req, res, next) {
+router.post('/chat', function(req, res, next) {
   let m_id;
   let username = req.body.username;
   let message = req.body.message;

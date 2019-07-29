@@ -7,8 +7,7 @@ let conf_data = require('../config.json');
 
 /* POST a new user */
 
-router.post('/createUser', [check('username').isLength({min:1}).trim().escape(),
-                            check('password').isLength({min:1}).trim().escape()], function(req, res, next) {
+router.post('/createUser', function(req, res, next) {
   var user_id;
   let username = req.body.username;
 
@@ -45,8 +44,7 @@ router.post('/createUser', [check('username').isLength({min:1}).trim().escape(),
 });
 
 /* POST a new authentication credential */
-router.post('/auth', [check('username').isLength({min:1}).trim().escape(),
-                      check('password').isLength({min:1}).trim().escape()], function(req, res, next) {
+router.post('/auth', function(req, res, next) {
   let password = req.body.password;
   let username = req.body.username;
 
