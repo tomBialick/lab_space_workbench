@@ -28,8 +28,8 @@ socketApi.sendAttachementNotification = function(event, message_id, username, fi
           message_id: message_id,
           type: "file",
           username: username,
-          fileName: fileName,
-          url: fileURL
+          attachment_name: fileName,
+          attachment_location: fileURL
         }
       }
     );

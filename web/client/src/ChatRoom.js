@@ -161,7 +161,7 @@ class ChatRoom extends Component {
     return (
         this.state.messages.map(messageData => {
           return messageData.map(dataItem => {
-            if (!dataItem.type) {
+            if (!dataItem.attachment_location) {
               if (dataItem.message) {
                 return (
                   <React.Fragment key={dataItem.message_id}>
@@ -178,7 +178,7 @@ class ChatRoom extends Component {
                 <React.Fragment key={dataItem.message_id}>
                   <div style={{border: '2px solid blue'}}>
                     <h4>{dataItem.username}</h4>
-                    <img src={dataItem.url} alt={dataItem.fileName} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                    <img src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
                   </div>
                 </React.Fragment>
               )
@@ -190,7 +190,7 @@ class ChatRoom extends Component {
 
   handleNewChat() {
     if (this.state.message) {
-      if (!this.state.message.type) {
+      if (!this.state.message.attachment_location ) {
         return (
           <React.Fragment key={this.state.message.message_id}>
             <div style={{border: '2px solid red'}}>
@@ -205,7 +205,7 @@ class ChatRoom extends Component {
           <React.Fragment key={this.state.message.message_id}>
             <div style={{border: '2px solid red'}}>
               <h4>{this.state.message.username}</h4>
-              <img src={this.state.message.url} alt={this.state.message.fileName} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+              <img src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
             </div>
           </React.Fragment>
         )
