@@ -108,7 +108,7 @@ router.post('/file', function(req, res, next) {
              else {
                m_id = data[0].max + 1;
              }
-             db.query( 'INSERT INTO MESSAGES (MESSAGE_ID, USERNAME, ATTACHMENT_NAME, ATTACHMENT_LOCATION)', [m_id, username, keyName, file_location])
+             db.query( 'INSERT INTO MESSAGES (MESSAGE_ID, USERNAME, ATTACHMENT_NAME, ATTACHMENT_LOCATION) VALUES ($1, $2, $3, $4)', [m_id, username, keyName, file_location])
              .then(results => {
                console.log(`File uploaded successfully at ${data.Location}`)
                fs.unlink(file_loc, (err) => {
