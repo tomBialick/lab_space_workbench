@@ -37,7 +37,7 @@ router.post('/chat', function(req, res, next) {
     else {
       m_id = data[0].max + 1;
     }
-    db.query('INSERT INTO MESSAGES ( MESSAGE_ID, USERNAME, TYPE, MESSAGE) VALUES ($1, $2, $3)', [m_id, username, 'text/html', message]).then(results => {
+    db.query('INSERT INTO MESSAGES ( MESSAGE_ID, USERNAME, TYPE, MESSAGE) VALUES ($1, $2, $3, $4)', [m_id, username, 'text/html', message]).then(results => {
       socketApi.sendNotification('messages', m_id, username, message)
       res.status(200).send("message sent")
     }).catch(error => {
