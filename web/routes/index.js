@@ -27,8 +27,8 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST a new chat */
-router.post('/chat',  [check('username').isLength({min:1}).trim().escape(),
-                       check('message').isLength({min:1}).escape()], function(req, res, next) {
+router.post('/chat',  [check('username').isLength({min:1}),
+                       check('message').isLength({min:1})], function(req, res, next) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() })
