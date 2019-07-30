@@ -118,7 +118,7 @@ router.post('/file', function(req, res, next) {
                  if (err) {
                    console.log('ERROR:', err);
                  }
-                 socketApi.sendAttachementNotification('attachment', m_id, username, type, keyName, file_location)
+                 socketApi.sendAttachementNotification('attachment', m_id, type, username, keyName, file_location)
                  res.status(200).send("File successully uploaded");
                })
              })
