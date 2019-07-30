@@ -13,8 +13,8 @@ class ChatRoom extends Component {
       messages: [],
       attachment: null,
       message: "",
-      endpoint: 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001/',
-      host: 'https://ec2-52-15-114-253.us-east-2.compute.amazonaws.com:3001'
+      endpoint: 'https://ec2-3-17-150-3.us-east-2.compute.amazonaws.com:3001/',
+      host: 'https://ec2-3-17-150-3.us-east-2.compute.amazonaws.com:3001'
     }
     this.addChat = this.addChat.bind(this);
     this.chatChange = this.chatChange.bind(this);
