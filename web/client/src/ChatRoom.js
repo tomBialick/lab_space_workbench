@@ -190,7 +190,17 @@ class ChatRoom extends Component {
                     <React.Fragment key={dataItem.message_id}>
                       <div style={{border: '2px solid blue'}}>
                         <h4>{dataItem.username}</h4>
-                        <video src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                        <video controls src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                      </div>
+                    </React.Fragment>
+                  )
+                }
+                else {
+                  return (
+                    <React.Fragment key={dataItem.message_id}>
+                      <div style={{border: '2px solid blue'}}>
+                        <h4>{dataItem.username}</h4>
+                        <embed src={dataItem.attachment_location} alt={dataItem.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
                       </div>
                     </React.Fragment>
                   )
@@ -230,7 +240,7 @@ class ChatRoom extends Component {
             <React.Fragment key={this.state.message.message_id}>
               <div style={{border: '2px solid red'}}>
                 <h4>{this.state.message.username}</h4>
-                <video src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+                <video controls src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
               </div>
             </React.Fragment>
           )
