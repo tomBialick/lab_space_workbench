@@ -245,6 +245,16 @@ class ChatRoom extends Component {
             </React.Fragment>
           )
         }
+        else {
+          return (
+            <React.Fragment key={this.state.message.message_id}>
+              <div style={{border: '2px solid red'}}>
+                <h4>{this.state.message.username}</h4>
+                <embed src={this.state.message.attachment_location} alt={this.state.message.attachment_name} style={{maxWidth: "400px", maxHeight: "400px", width: "auto", height: "auto"}} />
+              </div>
+            </React.Fragment>
+          )
+        }
       }
     }
   }
@@ -252,7 +262,7 @@ class ChatRoom extends Component {
   render() {
     return (
       <div id = "app-area" style={{width:'100%',height:'100%'}}>
-        <div id = "message-area" style={{width:'100%'}}>
+        <div id = "message-area" style={{width:'450px'}}>
           <form id="chat-form">
             <label>Chat:
               <input type="text" onChange={this.chatChange} ref="chatbox"/>
@@ -267,7 +277,7 @@ class ChatRoom extends Component {
           </form>
         </div>
         <button onClick={(e) => this.addChat(e)}>Update Chats</button>
-        <div id = "chat-log-area" style={{width:'100%'}}>
+        <div id = "chat-log-area" style={{width:'450px'}}>
           <div id = "new-chat-log-area">
             {this.handleNewChat()}
           </div>
