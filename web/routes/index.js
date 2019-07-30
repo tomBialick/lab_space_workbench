@@ -113,12 +113,12 @@ router.post('/file', function(req, res, next) {
              }
              db.query( 'INSERT INTO MESSAGES (MESSAGE_ID, USERNAME, TYPE, ATTACHMENT_NAME, ATTACHMENT_LOCATION) VALUES ($1, $2, $3, $4, $5)', [m_id, username, type, keyName, file_location])
              .then(results => {
-               console.log(`File uploaded successfully at ${data.Location}`)
+               console.log(`File uploaded successfully at ${file_location}`)
                fs.unlink(file_loc, (err) => {
                  if (err) {
                    console.log('ERROR:', err);
                  }
-                 socketApi.sendAttachementNotification('attachment', m_id, username, keyName, file_location)
+                 socketApi.sendAttachementNotification('attachment', m_id, username, type, keyName, file_location)
                  res.status(200).send("File successully uploaded");
                })
              })
