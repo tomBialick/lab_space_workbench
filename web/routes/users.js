@@ -6,8 +6,13 @@ var db = require('../db/db_utility.js')
 let conf_data = require('../config.json');
 
 /* POST a new user */
+router.post('/createUser', [check('username').isLength({min:1}).trim().escape(),
+                            check('password').isLength({min:1}).trim().escape()], function(req, res, next) {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
 
-router.post('/createUser', function(req, res, next) {
   var user_id;
   let username = req.body.username;
 
@@ -27,7 +32,7 @@ router.post('/createUser', function(req, res, next) {
         let password = req.body.password;
 
         db.query('INSERT INTO USERS (ID, USERNAME, PASSWORD) VALUES ($1, $2, $3)', [user_id, username, password]).then(results => {
-          res.status(200).json({body:{result:"User Profile Successfully Created"}})
+          res.status(201).json({body:{result:"User Profile Successfully Created"}})
         }).catch(error => {
           console.log('ERROR:', error);
           res.status(400).json({body:{issue:"Bad Request"}});
@@ -44,7 +49,12 @@ router.post('/createUser', function(req, res, next) {
 });
 
 /* POST a new authentication credential */
-router.post('/auth', function(req, res, next) {
+router.post('/auth', [check('username').isLength({min:1}).trim().escape(),
+                      check('password').isLength({min:1}).trim().escape()], function(req, res, next) {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
   let password = req.body.password;
   let username = req.body.username;
 

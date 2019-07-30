@@ -9,6 +9,7 @@ var socketApi = require('../socketApi');
 var io = socketApi.io;
 
 var mime = require('mime-types')
+const { check, validationResult } = require('express-validator');
 
 const fs = require('fs');
 const AWS = require('aws-sdk');
@@ -26,7 +27,13 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST a new chat */
-router.post('/chat', function(req, res, next) {
+router.post('/chat',  [check('username').isLength({min:1}).trim().escape(),
+                       check('message').isLength({min:1}).escape()], function(req, res, next) {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
+
   let m_id;
   let username = req.body.username;
   let message = req.body.message;
@@ -61,7 +68,7 @@ router.get('/chat', function(req, res, next) {
   })
 });
 
-/**/
+/* GET all chats older than messageID */
 router.get('/chat/old', function(req, res, next) {
   let messageQuery = req.query.messageID;
   db.query('SELECT * FROM MESSAGES WHERE MESSAGE_ID < $1', [messageQuery]).then(results => {
@@ -72,11 +79,15 @@ router.get('/chat/old', function(req, res, next) {
   })
 });
 
+/* POST a new file */
 router.post('/file', function(req, res, next) {
   if (Object.keys(req.files).length == 0) {
-    return res.status(400).send('Error uploading file');
+    res.status(400).send('Error uploading file');
   }
   let m_id;
+  if (!req.body.username) {
+    res.status(401).send('User not logged in');
+  }
   let username = req.body.username;
   let fileObj = req.files.file;
   let fileName = fileObj.name;
@@ -92,8 +103,8 @@ router.post('/file', function(req, res, next) {
     fs.readFile(file_loc, (err, data) => {
        if (err) throw err;
        const params = {
-           Bucket: conf_data["s3"]["bucketName"], // pass your bucket name
-           Key: keyName, // file will be saved as clippybucket2019/<keyName>
+           Bucket: conf_data["s3"]["bucketName"],
+           Key: keyName,
            ACL: 'public-read',
            Body: data
        };
@@ -119,7 +130,7 @@ router.post('/file', function(req, res, next) {
                    console.log('ERROR:', err);
                  }
                  socketApi.sendAttachementNotification('attachment', m_id, type, username, keyName, file_location)
-                 res.status(200).send("File successully uploaded");
+                 res.status(201).send("File successully uploaded");
                })
              })
              .catch(error => {
@@ -128,7 +139,7 @@ router.post('/file', function(req, res, next) {
              });
            }).catch(error => {
              console.log('ERROR:', error);
-             res.status(500).send("Error Adding File to Database");
+             res.status(500).send("Error Connecting to Database");
            });
          }
        });

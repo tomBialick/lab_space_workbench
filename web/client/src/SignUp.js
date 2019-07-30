@@ -79,7 +79,6 @@ class SignUp extends Component {
     }
   }
 
-
   render() {
     let passwordStatus;
 
@@ -106,7 +105,7 @@ class SignUp extends Component {
         </label>
         {passwordStatus}
         <button onClick={(e) => this.handleSignUp(e)}>Sign Up</button>
-          <button onClick={(e) => this.handleGoBack(e)}>Go Back</button>
+        <button onClick={(e) => this.handleGoBack(e)}>Go Back</button>
       </form>
       </div>
     )
