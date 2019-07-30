@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 var db = require('../db/db_utility.js')
-
 let conf_data = require('../config.json');
+
+const { check, validationResult } = require('express-validator');
 
 /* POST a new user */
 router.post('/createUser', [check('username').isLength({min:1}).trim().escape(),
