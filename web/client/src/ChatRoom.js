@@ -173,6 +173,9 @@ class ChatRoom extends Component {
                     </React.Fragment>
                   )
                 }
+                else {
+                  return
+                }
               }
               else {
                 if (dataItem.type.includes('image')) {
@@ -195,6 +198,9 @@ class ChatRoom extends Component {
                     </React.Fragment>
                   )
                 }
+                else if (dataItem.type === 'false') {
+                  return
+                }
                 else {
                   return (
                     <React.Fragment key={dataItem.message_id}>
@@ -206,6 +212,9 @@ class ChatRoom extends Component {
                   )
                 }
               }
+            }
+            else {
+              return
             }
           }
         )})
@@ -245,6 +254,9 @@ class ChatRoom extends Component {
             </React.Fragment>
           )
         }
+        else if (this.state.message.type === 'false') {
+          return
+        }
         else {
           return (
             <React.Fragment key={this.state.message.message_id}>
@@ -256,6 +268,9 @@ class ChatRoom extends Component {
           )
         }
       }
+    }
+    else {
+      return
     }
   }
 
