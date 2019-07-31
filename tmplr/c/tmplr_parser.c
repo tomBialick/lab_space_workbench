@@ -128,19 +128,26 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
  */
 int parse(FILE* file) {
 
-
-   int capacity = INIT_LIST_CAP;
-   char** naiveTokens = malloc(sizeof(char*) * capacity);
-   int naiveCount = naiveParse(file, naiveTokens, &capacity);
+   int* capacity = &INIT_LIST_CAP;
+   char** naiveTokens = malloc(sizeof(char*) * (*capacity));
+   int naiveCount = naiveParse(file, naiveTokens, capacity);
 
    //print naiveTokens to the console
    for (int i = 0; i < naiveCount; i++) {
-     printf("%s\n", naiveTokens[i]);
+     if (naiveTokens[i]) {
+        printf("%s\n", naiveTokens[i]);
+     }
    }
-
-
-   free(naiveTokens);
-
+   for (int i = 0; i < naiveCount; i++) {
+        free(naiveTokens[i]);
+   }
+   printf("147?\n");
+   printf("%d\n", *capacity);
+   if (naiveTokens) {
+     printf("Free it!\n");
+     free(naiveTokens);
+   }
+   printf("151?\n");
 
 
    return naiveCount;

@@ -36,4 +36,6 @@ int main(int argc, char* argv[]) {
    parse(file);
 
    fclose(file);
+
+   return 0;
 }
