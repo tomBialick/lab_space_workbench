@@ -4,13 +4,12 @@
 const int INIT_LIST_CAP = 100;
 const int INIT_TOK_CAP = 100;
 
-
 /**
  * Pass in a string array and the current capacity to double the capacity
  */
-int doubleTokenListCapacity(char*** tokenList, int currSize) {
+int doubleTokenListCapacity(char** tokenList, int currSize) {
   int newCap = currSize * 2;
-  **tokenList = realloc(**tokenList, (sizeof(char*) * newCap));
+  *tokenList = realloc(*tokenList, (sizeof(char*) * newCap));
   return newCap;
 }
 
@@ -22,13 +21,13 @@ int doubleTokenSize(char** currToken, int currSize) {
   *currToken = realloc(*currToken, (sizeof(char) * newCap));
   return newCap;
 }
-
 /**
  * separates into tokens without much interpretation, returns total amount
  */
-int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
+int naiveParse(FILE* file, char** naiveTokens, int cap) {
 
    int tokenCap = INIT_TOK_CAP;
+   int capacity = cap;
 
    char* token = malloc(sizeof(char) * tokenCap);
    int tokenCount = 0;
@@ -41,10 +40,11 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
        case ' ':
        case '\n':
        case '\t':
-         token[lexCount] = '\0';
+         //Finish current token
          if (token_building_flag == 1) {
-           if ((tokenCount + 1) == *capacity) {
-             *capacity = doubleTokenListCapacity(&naiveTokens, *capacity);
+           token[lexCount] = '\0';
+           if ((tokenCount + 1) == capacity) {
+             capacity = doubleTokenListCapacity(naiveTokens, capacity);
            }
            naiveTokens[tokenCount] = malloc(sizeof(char) * (lexCount + 1));
            memcpy(naiveTokens[tokenCount], token, (lexCount + 1));
@@ -57,6 +57,13 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
            free(token);
            token = malloc(sizeof(char) * tokenCap);
 
+         }
+         //Ignore extra space
+         if (lex == '\n') {
+           naiveTokens[tokenCount] = malloc(sizeof(char) * (1 + 1));
+           char singleLexTok[2] = {lex, '\0'};
+           memcpy(naiveTokens[tokenCount], singleLexTok, 2);
+           tokenCount++;
          }
          break;
        case '-':
@@ -84,20 +91,21 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
        case '.':
        case ':':
        case ',':
+         //Finish current token
          if (token_building_flag == 1) {
-           if ((tokenCount + 1) == *capacity) {
-             *capacity = doubleTokenListCapacity(&naiveTokens, *capacity);
-           }
            token[lexCount] = '\0';
+           if ((tokenCount + 1) == capacity) {
+             capacity = doubleTokenListCapacity(naiveTokens, capacity);
+           }
            naiveTokens[tokenCount] = malloc(sizeof(char) * (lexCount + 1));
            memcpy(naiveTokens[tokenCount], token, (lexCount + 1));
            tokenCount++;
            token_building_flag = 0;
 
            //refresh token
+           free(token);
            lexCount = 0;
            int tokenCap = INIT_TOK_CAP;
-           free(token);
            token = malloc(sizeof(char) * tokenCap);
          }
          naiveTokens[tokenCount] = malloc(sizeof(char) * (1 + 1));
@@ -107,7 +115,7 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
          break;
        default:
          token_building_flag = 1;
-         if ((lexCount + 1) == tokenCap) {
+         if ((lexCount + 2) == tokenCap) {
            tokenCap = doubleTokenSize(&token, tokenCap);
          }
          token[lexCount] = lex;
@@ -121,33 +129,33 @@ int naiveParse(FILE* file, char** naiveTokens, int* capacity) {
    return tokenCount;
 }
 
+// char** removeExtraLines(char** naiveTokens, int naiveCount) {
+//
+// }
+
 
 
 /**
  * separates into tokens with interpretation, returns total amount
  */
 int parse(FILE* file) {
-
-   int* capacity = &INIT_LIST_CAP;
-   char** naiveTokens = malloc(sizeof(char*) * (*capacity));
+   int capacity = INIT_LIST_CAP;
+   char** naiveTokens = malloc(sizeof(char*) * (capacity));
    int naiveCount = naiveParse(file, naiveTokens, capacity);
 
    //print naiveTokens to the console
    for (int i = 0; i < naiveCount; i++) {
-     if (naiveTokens[i]) {
-        printf("%s\n", naiveTokens[i]);
-     }
+      printf("%s\n", naiveTokens[i]);
    }
+
    for (int i = 0; i < naiveCount; i++) {
         free(naiveTokens[i]);
    }
-   printf("147?\n");
-   printf("%d\n", *capacity);
-   if (naiveTokens) {
-     printf("Free it!\n");
-     free(naiveTokens);
-   }
-   printf("151?\n");
+
+   // For some reason, this causes a seg fault. Might be already freed?
+   // if (naiveTokens) {
+   //   free(naiveTokens);
+   // }
 
 
    return naiveCount;

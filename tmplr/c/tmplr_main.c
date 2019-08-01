@@ -33,7 +33,8 @@ int main(int argc, char* argv[]) {
        exit(EXIT_FAILURE);
    }
 
-   parse(file);
+   int total = parse(file);
+   printf("total tokens: %d\n", total);
 
    fclose(file);
 
