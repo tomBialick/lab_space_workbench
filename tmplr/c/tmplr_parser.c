@@ -185,31 +185,74 @@ TokenList* removeEmptyLines(TokenList* naiveTokens) {
   return noEmptyLines;
 }
 
+TokenList* removeInlineComments(TokenList* noEmptyLines) {
+  TokenList* noInLineComments = generateTokenList();
 
+  for (int i = 0; i < noEmptyLines->size; i++) {
+    if ((i < (noEmptyLines->size - 3)) && (strcmp(noEmptyLines->list[i]->leximes, "/") == 0) && (strcmp(noEmptyLines->list[i + 1]->leximes, "/") == 0)) {
+      int j = i + 2;
+      while ((j < noEmptyLines->size - 2) && (strcmp(noEmptyLines->list[j]->leximes, "\n") != 0)) {
+        j++;
+      }
+      i = j + 1;
+    }
+    if ((noInLineComments->size + 1) == noInLineComments->capacity) {
+      doubleTokenListCapacity(noInLineComments);
+    }
+    noInLineComments->list[noInLineComments->size] = generateToken();
+    while (noInLineComments->list[noInLineComments->size]->capacity <= noEmptyLines->list[i]->size) {
+      doubleTokenCapacity(noInLineComments->list[noInLineComments->size]);
+    }
+    noInLineComments->list[noInLineComments->size]->size = noEmptyLines->list[i]->size;
+    memcpy(noInLineComments->list[noInLineComments->size]->leximes, noEmptyLines->list[i]->leximes, noEmptyLines->list[i]->size);
+    noInLineComments->size++;
+
+
+  }
+
+  deleteTokenList(noEmptyLines);
+  return noInLineComments;
+}
+
+TokenList* removeBlockComments(TokenList* noInLineComments) {
+  TokenList* noBlockComments = generateTokenList();
+  for (int i = 0; i < noInLineComments->size; i++) {
+    if ((i < (noInLineComments->size - 4)) && (strcmp(noInLineComments->list[i]->leximes, "/") == 0) && (strcmp(noInLineComments->list[i + 1]->leximes, "*") == 0)) {
+      int j = i + 2;
+      while ((j < noInLineComments->size - 3) && (strcmp(noInLineComments->list[j]->leximes, "*") != 0) && (strcmp(noInLineComments->list[j+1]->leximes, "/") != 0)) {
+        j++;
+      }
+      i = j + 2;
+    }
+    if ((noBlockComments->size + 1) == noBlockComments->capacity) {
+      doubleTokenListCapacity(noBlockComments);
+    }
+    noBlockComments->list[noBlockComments->size] = generateToken();
+    while (noBlockComments->list[noBlockComments->size]->capacity <= noInLineComments->list[i]->size) {
+      doubleTokenCapacity(noBlockComments->list[noBlockComments->size]);
+    }
+    noBlockComments->list[noBlockComments->size]->size = noInLineComments->list[i]->size;
+    memcpy(noBlockComments->list[noBlockComments->size]->leximes, noInLineComments->list[i]->leximes, noInLineComments->list[i]->size);
+    noBlockComments->size++;
+
+
+  }
+
+  deleteTokenList(noInLineComments);
+  return noBlockComments;
+}
 
 /**
  * separates into tokens with interpretation, returns total amount
  */
-int parse(FILE* file) {
+TokenList* parse(FILE* file) {
    TokenList* tokens = generateTokenList();
    naiveParse(file, tokens);
-
-   //print naiveTokens to the console
-   for (int i = 0; i < tokens->size; i++) {
-      printf("%s\n", tokens->list[i]->leximes);
-   }
-   printf("Naive count: %d\n", tokens->size);
-
    tokens = removeEmptyLines(tokens);
-   printf("New count: %d\n", tokens->size);
-   for (int i = 0; i < tokens->size; i++) {
-      printf("%s\n", tokens->list[i]->leximes);
-   }
-
-   int count = tokens->size;
-   //free them
-   deleteTokenList(tokens);
+   tokens = removeInlineComments(tokens);
+   tokens = removeBlockComments(tokens);
+   tokens = removeEmptyLines(tokens);
 
 
-   return count;
+   return tokens;
 }

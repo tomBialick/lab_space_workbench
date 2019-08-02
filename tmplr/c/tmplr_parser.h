@@ -30,6 +30,6 @@ void doubleTokenListCapacity(TokenList*);
 
 void doubleTokenCapacity(Token*);
 
-int parse(FILE*);
+TokenList* parse(FILE*);
 
 #endif
