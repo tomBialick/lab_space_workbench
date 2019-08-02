@@ -1,8 +1,13 @@
 #include "tmplr_parser.h"
 
-const int INIT_LIST_CAP = 100;
+//If segfaults or aborts, try increasing INIT_LIST_CAP.
+//I think my doubleTokenListCapacity() function is wrong
+const int INIT_LIST_CAP = 1000;
 const int INIT_TOK_CAP = 10;
 
+/*
+ * Creates a token with INIT_TOK_CAP character slots
+ */
 Token* generateToken() {
   Token* token = malloc(sizeof(Token));
   token->capacity = INIT_TOK_CAP;
@@ -12,6 +17,9 @@ Token* generateToken() {
   return token;
 }
 
+/*
+ * Creates a tokenlist with INIT_LIST_CAP token slots
+ */
 TokenList* generateTokenList() {
   TokenList* tokens = malloc(sizeof(TokenList));
   tokens->capacity = INIT_LIST_CAP;
@@ -20,6 +28,9 @@ TokenList* generateTokenList() {
   return tokens;
 }
 
+/*
+ * Frees a Token* and its contents
+ */
 void deleteToken(Token* token) {
   free(token->leximes);
   token->capacity = 0;
@@ -27,6 +38,9 @@ void deleteToken(Token* token) {
   free(token);
 }
 
+/*
+ * Frees a TokenList* and its contents
+ */
 void deleteTokenList(TokenList* tokens) {
   for (int i = 0; i < tokens->size; i++) {
     deleteToken(tokens->list[i]);
@@ -38,7 +52,7 @@ void deleteTokenList(TokenList* tokens) {
 }
 
 /**
- * Pass in a string array and the current capacity to double the capacity
+ * Pass in a TokenList to double the capacity
  */
 void doubleTokenListCapacity(TokenList* tokens) {
   tokens->capacity = tokens->capacity * 2;
@@ -46,7 +60,7 @@ void doubleTokenListCapacity(TokenList* tokens) {
 }
 
 /**
- * Pass in a string and the capacity to double its capacity
+ * Pass in a Token to double its capacity
  */
 void doubleTokenCapacity(Token* token) {
   token->capacity = token->capacity * 2;
@@ -152,6 +166,9 @@ void naiveParse(FILE* file, TokenList* naiveTokens) {
    free(token);
 }
 
+/*
+ * removes blank lines as well as lines with weird invisible characters
+ */
 TokenList* removeEmptyLines(TokenList* naiveTokens) {
   TokenList* noEmptyLines = generateTokenList();
   int newLineFlag = 0;
@@ -185,6 +202,9 @@ TokenList* removeEmptyLines(TokenList* naiveTokens) {
   return noEmptyLines;
 }
 
+/*
+ * Removes from // to when a newline is detected
+ */
 TokenList* removeInlineComments(TokenList* noEmptyLines) {
   TokenList* noInLineComments = generateTokenList();
 
@@ -214,6 +234,9 @@ TokenList* removeInlineComments(TokenList* noEmptyLines) {
   return noInLineComments;
 }
 
+/*
+ * removes any and all block comments
+ */
 TokenList* removeBlockComments(TokenList* noInLineComments) {
   TokenList* noBlockComments = generateTokenList();
   for (int i = 0; i < noInLineComments->size; i++) {
@@ -234,16 +257,13 @@ TokenList* removeBlockComments(TokenList* noInLineComments) {
     noBlockComments->list[noBlockComments->size]->size = noInLineComments->list[i]->size;
     memcpy(noBlockComments->list[noBlockComments->size]->leximes, noInLineComments->list[i]->leximes, noInLineComments->list[i]->size);
     noBlockComments->size++;
-
-
   }
-
   deleteTokenList(noInLineComments);
   return noBlockComments;
 }
 
 /**
- * separates into tokens with interpretation, returns total amount
+ * separates into tokens with interpretation, returns the parsed struct
  */
 TokenList* parse(FILE* file) {
    TokenList* tokens = generateTokenList();
@@ -252,7 +272,6 @@ TokenList* parse(FILE* file) {
    tokens = removeInlineComments(tokens);
    tokens = removeBlockComments(tokens);
    tokens = removeEmptyLines(tokens);
-
 
    return tokens;
 }

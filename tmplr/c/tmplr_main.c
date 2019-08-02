@@ -37,10 +37,10 @@ int main(int argc, char* argv[]) {
    TokenList* tokens = parse(file);
    printf("Actual token count: %d\n", tokens->size);
 
-   for (int i = 0; i < tokens->size; i++) {
-      printf("%s\n", tokens->list[i]->leximes);
-   }
-   
+   // for (int i = 0; i < tokens->size; i++) {
+   //    printf("%s\n", tokens->list[i]->leximes);
+   // }
+
    //free them
    deleteTokenList(tokens);
    fclose(file);
