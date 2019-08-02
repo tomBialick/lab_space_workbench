@@ -48,7 +48,7 @@ class SignUp extends Component {
     event.preventDefault();
     if (this.state.passwordMatch) {
       if (this.state.username) {
-        let hosturl = 'https://ec2-3-17-150-3.us-east-2.compute.amazonaws.com:3001';
+        let hosturl = 'https://ec2-18-188-142-129.us-east-2.compute.amazonaws.com:3001';
         let data = {
           "username": this.state.username,
           "password": this.state.password
