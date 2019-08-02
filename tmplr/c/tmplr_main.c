@@ -1,4 +1,5 @@
 #include "tmplr_parser.h"
+// #include <string.h>
 
 const int ARG_COUNT = 3;
 
@@ -34,7 +35,7 @@ int main(int argc, char* argv[]) {
    }
 
    int total = parse(file);
-   printf("total tokens: %d\n", total);
+   printf("Actual token count: %d\n", total);
 
    fclose(file);
 
