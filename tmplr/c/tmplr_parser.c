@@ -152,7 +152,6 @@ void naiveParse(FILE* file, TokenList* naiveTokens) {
        case '\"':
        case '\'':
        case '\\':
-       case '.':
        case ':':
        case ',':
          //Finish current token
@@ -177,6 +176,7 @@ void naiveParse(FILE* file, TokenList* naiveTokens) {
          memcpy(naiveTokens->list[naiveTokens->size]->leximes, singleLexTok, 2);
          naiveTokens->size++;
          break;
+       //Periods go here for now to not mess up decimals
        default:
          token->building_flag = 1;
          if ((token->size + 2) == token->capacity) {
@@ -368,6 +368,14 @@ TokenList* consolidator(TokenList* noComments) {
       i++;
     }
     else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "+") == 0) && (strcmp(noComments->list[i + 1]->leximes, "+") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "*") == 0) && (strcmp(noComments->list[i + 1]->leximes, "*") == 0)) {
       consolidated->list[consolidated->size] = generateToken();
       consolidated->list[consolidated->size]->size = 3;
       char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
