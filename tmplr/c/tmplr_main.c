@@ -13,6 +13,14 @@ int main(int argc, char* argv[]) {
     exit(EXIT_FAILURE);
   }
 
+  printf("  ___       ___       ___       ___       ___   \n");
+  printf(" /\\  \\     /\\__\\     /\\  \\     /\\__\\     /\\  \\  \n");
+  printf(" \\:\\  \\   /::L_L_   /::\\  \\   /:/  /    /::\\  \\ \n" );
+  printf(" /::\\__\\ /:/L:\\__\\ /::\\:\\__\\ /:/__/    /::\\:\\__\n");
+  printf("/:/\\/__/ \\/_/:/  / \\/\\::/  / \\:\\  \\    \\;:::/  /\n");
+  printf("\\/__/      /:/  /     \\/__/   \\:\\__\\    |:\\/__/ \n");
+  printf("           \\/__/               \\/__/     \\|__|  \n");
+
   char* filename;
   FILE* file;
 
@@ -37,11 +45,10 @@ int main(int argc, char* argv[]) {
    TokenList* tokens = parse(file);
    printf("Actual token count: %d\n", tokens->size);
 
-   // for (int i = 0; i < tokens->size; i++) {
-   //    printf("%s\n", tokens->list[i]->leximes);
-   // }
+   /*for (int i = 0; i < tokens->size; i++) {
+       printf("%s", tokens->list[i]->leximes);
+    }*/
 
-   //free them
    deleteTokenList(tokens);
    fclose(file);
 

@@ -10,8 +10,17 @@ const int INIT_TOK_CAP = 10;
  */
 Token* generateToken() {
   Token* token = malloc(sizeof(Token));
+  if (token == NULL){
+    printf("Error creating token");
+    exit(EXIT_FAILURE);
+   }
   token->capacity = INIT_TOK_CAP;
   token->leximes = malloc(token->capacity * sizeof(char));
+  if (token->leximes == NULL){
+    printf("Error creating token");
+    exit(EXIT_FAILURE);
+  }
+
   token->size = 0;
   token->building_flag = 0;
   return token;
@@ -22,8 +31,17 @@ Token* generateToken() {
  */
 TokenList* generateTokenList() {
   TokenList* tokens = malloc(sizeof(TokenList));
+  if (tokens == NULL){
+    printf("Error creating token list");
+    exit(EXIT_FAILURE);
+  }
   tokens->capacity = INIT_LIST_CAP;
   tokens->list = malloc(tokens->capacity * sizeof(Token));
+  if (tokens->list == NULL){
+    printf("Error creating token list");
+    exit(EXIT_FAILURE);
+  }
+
   tokens->size = 0;
   return tokens;
 }
@@ -57,6 +75,10 @@ void deleteTokenList(TokenList* tokens) {
 void doubleTokenListCapacity(TokenList* tokens) {
   tokens->capacity = tokens->capacity * 2;
   tokens->list = realloc(tokens->list, (sizeof(Token) * tokens->capacity));
+  if (tokens->list == NULL){
+    printf("Error expanding token list");
+    exit(EXIT_FAILURE);
+  }
 }
 
 /**
@@ -65,6 +87,10 @@ void doubleTokenListCapacity(TokenList* tokens) {
 void doubleTokenCapacity(Token* token) {
   token->capacity = token->capacity * 2;
   token->leximes = realloc(token->leximes, (sizeof(char) * token->capacity));
+  if (token == NULL){
+    printf("Error expanding token");
+    exit(EXIT_FAILURE);
+  }
  }
 /**
  * separates into tokens without much interpretation, returns total amount
@@ -226,10 +252,7 @@ TokenList* removeInlineComments(TokenList* noEmptyLines) {
     noInLineComments->list[noInLineComments->size]->size = noEmptyLines->list[i]->size;
     memcpy(noInLineComments->list[noInLineComments->size]->leximes, noEmptyLines->list[i]->leximes, noEmptyLines->list[i]->size);
     noInLineComments->size++;
-
-
   }
-
   deleteTokenList(noEmptyLines);
   return noInLineComments;
 }
@@ -263,6 +286,118 @@ TokenList* removeBlockComments(TokenList* noInLineComments) {
 }
 
 /**
+ * Consolidates tokens together that shouldn't be split up
+ */
+TokenList* consolidator(TokenList* noComments) {
+  TokenList* consolidated = generateTokenList();
+  for (int i = 0; i < noComments->size; i++) {
+    if ((consolidated->size + 1) == consolidated->capacity) {
+      doubleTokenListCapacity(consolidated);
+    }
+
+    if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i+1]->leximes, "=") == 0) &&
+      ((strcmp(noComments->list[i]->leximes, "=") == 0) || (strcmp(noComments->list[i]->leximes, "!") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "*") == 0) || (strcmp(noComments->list[i]->leximes, "+") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "-") == 0) || (strcmp(noComments->list[i]->leximes, "/") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "<") == 0) || (strcmp(noComments->list[i]->leximes, ">") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "%") == 0) || (strcmp(noComments->list[i]->leximes, "^") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "&") == 0) || (strcmp(noComments->list[i]->leximes, "|") == 0))) {
+
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, ">") == 0) && (strcmp(noComments->list[i + 1]->leximes, ">") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "<") == 0) && (strcmp(noComments->list[i + 1]->leximes, "<") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 3)) && (strcmp(noComments->list[i]->leximes, ">") == 0) && (strcmp(noComments->list[i + 1]->leximes, ">") == 0) && (strcmp(noComments->list[i]->leximes, "=") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 4;
+      char dubLexTok[4] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], noComments->list[i+2]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 4);
+      consolidated->size++;
+      i += 2;
+    }
+    else if ((i < (noComments->size - 3)) && (strcmp(noComments->list[i]->leximes, "<") == 0) && (strcmp(noComments->list[i + 1]->leximes, "<") == 0) && (strcmp(noComments->list[i]->leximes, "=") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 4;
+      char dubLexTok[4] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], noComments->list[i+2]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 4);
+      consolidated->size++;
+      i += 2;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "!") == 0) &&
+      (strcmp(noComments->list[i + 1]->leximes, "=") == 0)) {
+        consolidated->list[consolidated->size] = generateToken();
+        consolidated->list[consolidated->size]->size = 3;
+        char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+        memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+        consolidated->size++;
+        i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "&") == 0) && (strcmp(noComments->list[i + 1]->leximes, "&") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "|") == 0) && (strcmp(noComments->list[i + 1]->leximes, "|") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "+") == 0) && (strcmp(noComments->list[i + 1]->leximes, "+") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else if ((i < (noComments->size - 2)) && (strcmp(noComments->list[i]->leximes, "-") == 0) && (strcmp(noComments->list[i + 1]->leximes, "-") == 0)) {
+      consolidated->list[consolidated->size] = generateToken();
+      consolidated->list[consolidated->size]->size = 3;
+      char dubLexTok[3] = {noComments->list[i]->leximes[0], noComments->list[i+1]->leximes[0], '\0'};
+      memcpy(consolidated->list[consolidated->size]->leximes, dubLexTok, 3);
+      consolidated->size++;
+      i++;
+    }
+    else {
+      consolidated->list[consolidated->size] = generateToken();
+      while (consolidated->list[consolidated->size]->capacity <= noComments->list[i]->size) {
+        doubleTokenCapacity(consolidated->list[consolidated->size]);
+      }
+      consolidated->list[consolidated->size]->size = noComments->list[i]->size;
+      memcpy(consolidated->list[consolidated->size]->leximes, noComments->list[i]->leximes, noComments->list[i]->size);
+      consolidated->size++;
+    }
+  }
+  deleteTokenList(noComments);
+  return consolidated;
+}
+
+/**
  * separates into tokens with interpretation, returns the parsed struct
  */
 TokenList* parse(FILE* file) {
@@ -272,6 +407,7 @@ TokenList* parse(FILE* file) {
    tokens = removeInlineComments(tokens);
    tokens = removeBlockComments(tokens);
    tokens = removeEmptyLines(tokens);
+   tokens = consolidator(tokens);
 
    return tokens;
 }

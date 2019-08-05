@@ -20,13 +20,16 @@
 #
 CC=gcc
 CFLAGS=-O0 -std=c99 -Wall -W -g -ggdb3
-OBJECTS= tmplr_main.o tmplr_parser.o
+OBJECTS= tmplr_main.o tmplr_parser.o tmplr_ast.o
 
 tmplr: $(OBJECTS)
 	$(CC) $(CFLAGS) -o tmplr $(OBJECTS)
 
-tmplr_main.o: tmplr_main.c tmplr_parser.o
+tmplr_main.o: tmplr_main.c tmplr_parser.o tmplr_ast.o
 	$(CC) $(CFLAGS) -c tmplr_main.c
+
+tmplr_ast.o: tmplr_parser.o tmplr_ast.h
+	$(CC) $(CFLAGS) -c tmplr_ast.c
 
 tmplr_parser.o: tmplr_parser.c tmplr_parser.h
 	$(CC) $(CFLAGS) -c tmplr_parser.c

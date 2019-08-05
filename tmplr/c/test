@@ -16,6 +16,9 @@ int main() {
 
   int l = k / i;
 
-  return l;
+  j *= l;
+  k++;
+
+  return (i == l);
 }
 //End of file comment
