@@ -10,13 +10,13 @@ const int INIT_TOK_CAP = 10;
  */
 Token* generateToken() {
   Token* token = malloc(sizeof(Token));
-  if (token == NULL){
+  if (token == NULL) {
     printf("Error creating token");
     exit(EXIT_FAILURE);
    }
   token->capacity = INIT_TOK_CAP;
   token->leximes = malloc(token->capacity * sizeof(char));
-  if (token->leximes == NULL){
+  if (token->leximes == NULL) {
     printf("Error creating token");
     exit(EXIT_FAILURE);
   }
@@ -31,19 +31,29 @@ Token* generateToken() {
  */
 TokenList* generateTokenList() {
   TokenList* tokens = malloc(sizeof(TokenList));
-  if (tokens == NULL){
+  if (tokens == NULL) {
     printf("Error creating token list");
     exit(EXIT_FAILURE);
   }
   tokens->capacity = INIT_LIST_CAP;
   tokens->list = malloc(tokens->capacity * sizeof(Token));
-  if (tokens->list == NULL){
+  if (tokens->list == NULL) {
     printf("Error creating token list");
     exit(EXIT_FAILURE);
   }
-
   tokens->size = 0;
   return tokens;
+}
+
+TokenLine* generateTokenLine() {
+  TokenLine* lines = malloc(sizeof(TokenLine));
+  if (lines == NULL) {
+    printf("Error creating token line");
+    exit(EXIT_FAILURE);
+  }
+  lines->tokens = generateTokenList();
+  lines->next = NULL;
+  return lines;
 }
 
 /*
@@ -69,13 +79,21 @@ void deleteTokenList(TokenList* tokens) {
   free(tokens);
 }
 
+void deleteTokenLine(TokenLine* lines) {
+  if (lines->next != NULL) {
+    deleteTokenLine(lines->next);
+  }
+  deleteTokenList(lines->tokens);
+  free(lines);
+}
+
 /**
  * Pass in a TokenList to double the capacity
  */
 void doubleTokenListCapacity(TokenList* tokens) {
   tokens->capacity = tokens->capacity * 2;
   tokens->list = realloc(tokens->list, (sizeof(Token) * tokens->capacity));
-  if (tokens->list == NULL){
+  if (tokens->list == NULL) {
     printf("Error expanding token list");
     exit(EXIT_FAILURE);
   }
@@ -87,7 +105,7 @@ void doubleTokenListCapacity(TokenList* tokens) {
 void doubleTokenCapacity(Token* token) {
   token->capacity = token->capacity * 2;
   token->leximes = realloc(token->leximes, (sizeof(char) * token->capacity));
-  if (token == NULL){
+  if (token == NULL) {
     printf("Error expanding token");
     exit(EXIT_FAILURE);
   }
@@ -405,10 +423,45 @@ TokenList* consolidator(TokenList* noComments) {
   return consolidated;
 }
 
+void fillLines(TokenLine* lines, TokenList* tokens) {
+  TokenLine* curr = lines;
+  for (int i = 0; i < tokens->size; i++) {
+    //put it in Lines
+    if (strcmp(tokens->list[i]->leximes, "\n") != 0) {
+      printf("%s ", tokens->list[i]->leximes);
+      if ((curr->tokens->size + 1) == curr->tokens->capacity) {
+        doubleTokenListCapacity(curr->tokens);
+      }
+      curr->tokens->list[curr->tokens->size] = generateToken();
+      while (curr->tokens->list[curr->tokens->size]->capacity <= tokens->list[i]->size) {
+        doubleTokenCapacity(curr->tokens->list[curr->tokens->size]);
+      }
+      lines->tokens->list[lines->tokens->size]->size = lines->tokens->list[i]->size;
+      memcpy(lines->tokens->list[lines->tokens->size]->leximes, tokens->list[i]->leximes, tokens->list[i]->size);
+      lines->tokens->size++;
+    }
+    //make a new line
+    else {
+    //   if (i < tokens->size - 1) {
+        printf("<NL>\n");
+    //     curr->next = generateTokenLine();
+    //     curr = curr->next;
+    //   }
+    }
+  }
+}
+
+TokenLine* createLines(TokenList* tokens) {
+  TokenLine* lines = generateTokenLine();
+  fillLines(lines, tokens);
+  deleteTokenList(tokens);
+  return lines;
+}
+
 /**
  * separates into tokens with interpretation, returns the parsed struct
  */
-TokenList* parse(FILE* file) {
+TokenLine* parse(FILE* file) {
    TokenList* tokens = generateTokenList();
    naiveParse(file, tokens);
    tokens = removeEmptyLines(tokens);
@@ -417,5 +470,7 @@ TokenList* parse(FILE* file) {
    tokens = removeEmptyLines(tokens);
    tokens = consolidator(tokens);
 
-   return tokens;
+   TokenLine* lines = createLines(tokens);
+
+   return lines;
 }

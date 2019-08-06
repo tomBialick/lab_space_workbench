@@ -42,14 +42,17 @@ int main(int argc, char* argv[]) {
        exit(EXIT_FAILURE);
    }
 
-   TokenList* tokens = parse(file);
-   printf("Actual token count: %d\n", tokens->size);
+   TokenLine* lines = parse(file);
+   TokenLine* curr = lines;
+   while (curr != NULL) {
+     for (int i = 0; i < curr->tokens->size; i++) {
+       printf("%s", curr->tokens->list[i]->leximes);
+     }
+     printf("\n");
+     curr = curr->next;
+   }
 
-   /*for (int i = 0; i < tokens->size; i++) {
-       printf("%s", tokens->list[i]->leximes);
-    }*/
-
-   deleteTokenList(tokens);
+   deleteTokenLine(lines);
    fclose(file);
 
    return 0;

@@ -5,31 +5,40 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct _Token {
+typedef struct _TOKEN {
   char* leximes;
   int size;
   int capacity;
   int building_flag;
 } Token;
 
-typedef struct _TokenList {
+typedef struct _TOKEN_LIST {
   Token** list;
   int size;
   int capacity;
 } TokenList;
 
+typedef struct _TOKEN_LINE {
+  TokenList* tokens;
+  struct _TOKEN_LINE* next;
+} TokenLine;
+
 Token* generateToken();
 
 TokenList* generateTokenList();
+
+TokenLine* generateTokenLine();
 
 void deleteToken(Token*);
 
 void deleteTokenList(TokenList*);
 
+void deleteTokenLine(TokenLine*);
+
 void doubleTokenListCapacity(TokenList*);
 
 void doubleTokenCapacity(Token*);
 
-TokenList* parse(FILE*);
+TokenLine* parse(FILE*);
 
 #endif
