@@ -8,17 +8,58 @@ Element* generateElement() {
     printf("Error creating element");
     exit(EXIT_FAILURE);
   }
-  el->eType = EMPTY;
-  el->intVal = 0;
-  el->strCapacity = INIT_ELM_STR_CAP;
-  el->strVal = malloc(el->strCapacity * sizeof(char));
-  if (el->strVal == NULL) {
+  el->eType = NO_TYPE;
+  el->token = malloc(sizeof(Token));
+  if (el->token == NULL) {
     printf("Error creating element");
     exit(EXIT_FAILURE);
   }
-  el->strLength = 0;
-  el->dubVal = 0;
   return el;
+}
+
+Special* generateSpecial() {
+  Special* sp = malloc(sizeof(Special));
+  if (sp == NULL) {
+    printf("Error creating special");
+    exit(EXIT_FAILURE);
+  }
+  sp->sType = UNDEF_SPEC;
+  sp->token = malloc(sizeof(Token));
+  if (sp->token == NULL) {
+    printf("Error creating special");
+    exit(EXIT_FAILURE);
+  }
+  return sp;
+}
+
+Operator* generateOperator() {
+  Operator* op = malloc(sizeof(Operator));
+  if (op == NULL) {
+    printf("Error creating element");
+    exit(EXIT_FAILURE);
+  }
+  op->oType = NOOP;
+  op->token = malloc(sizeof(Token));
+  if (op->token == NULL) {
+    printf("Error creating element");
+    exit(EXIT_FAILURE);
+  }
+  return op;
+}
+
+Keyword* generateKeyword() {
+  Keyword* key = malloc(sizeof(Keyword));
+  if (key == NULL) {
+    printf("Error creating element");
+    exit(EXIT_FAILURE);
+  }
+  key->kType = UNDEF_KEY;
+  key->token = malloc(sizeof(Token));
+  if (key->token == NULL) {
+    printf("Error creating element");
+    exit(EXIT_FAILURE);
+  }
+  return key;
 }
 
 Expression* generateExpression() {
@@ -27,11 +68,12 @@ Expression* generateExpression() {
     printf("Error creating expression");
     exit(EXIT_FAILURE);
   }
-  ex->left = generateElement();
-  ex->right = generateElement();
+  ex->left = NULL;
+  ex->op = NULL;
+  ex->right = NULL;
   ex->l_exp = NULL;
   ex->r_exp = NULL;
-  ex->op = NOOP;
+  ex->exType = UNDEF_EX;
   return ex;
 }
 
@@ -41,25 +83,24 @@ Statement* generateStatement() {
     printf("Error creating statement");
     exit(EXIT_FAILURE);
   }
-  st->type = EMPTY;
-  st->statement = NULL;
-  st->express = generateExpression();
+  st->keyword = NULL;
+  st->type = UNDEF_STATE;
+  st->express = NULL;
+  st->l_routine = NULL;
+  st->r_routine = NULL;
+  st->special = NULL;
   return st;
 }
 
-AstNode* generateAstNode() {
-  AstNode* astNode = malloc(sizeof(AstNode));
-  if (astNode == NULL) {
+Routine* generateRoutine() {
+  Routine* routine = malloc(sizeof(Routine));
+  if (routine == NULL) {
     printf("Error creating ASTNode");
     exit(EXIT_FAILURE);
   }
-  astNode->curr = generateStatement();
-  if (astNode->curr == NULL) {
-    printf("Error creating ASTNode");
-    exit(EXIT_FAILURE);
-  }
-  astNode->next = NULL;
-  return astNode;
+  routine->curr = NULL;
+  routine->next = NULL;
+  return routine;
 }
 
 Ast* generateAst() {
@@ -68,79 +109,229 @@ Ast* generateAst() {
     printf("Error creating AST");
     exit(EXIT_FAILURE);
   }
-  ast->root = generateAstNode();
+  ast->root = NULL;
+  ast->next = NULL;
   return ast;
 }
 
 void deleteElement(Element* el) {
-  el->eType = EMPTY;
-  el->intVal = 0;
-  el->dubVal = 0;
-  free(el->strVal);
-  el->strCapacity = 0;
-  el->strLength = 0;
+  el->eType = NO_TYPE;
+  deleteToken(el->token);
   free(el);
 }
 
+void deleteOperator(Operator* op) {
+  op->oType = NOOP;
+  deleteToken(op->token);
+  free(op);
+}
+
+void deleteSpecial(Special* sp) {
+  sp->sType = UNDEF_SPEC;
+  deleteToken(sp->token);
+  free(sp);
+}
+
+void deleteKeyword(Keyword* key) {
+  key->kType = UNDEF_KEY;
+  deleteToken(key->token);
+  free(key);
+}
+
 void deleteExpression(Expression* ex) {
-  deleteElement(ex->left);
-  deleteElement(ex->right);
-  if (ex->l_exp != NULL) {
-    deleteExpression(ex->l_exp);
+  switch (ex->exType) {
+    case EL_O_EL:
+      deleteElement(ex->left);
+      deleteOperator(ex->op);
+      deleteElement(ex->right);
+      break;
+    case EX_O_EL:
+      deleteExpression(ex->l_exp);
+      deleteOperator(ex->op);
+      deleteElement(ex->right);
+      break;
+    case EL_O_EX:
+      deleteElement(ex->left);
+      deleteOperator(ex->op);
+      deleteExpression(ex->r_exp);
+      break;
+    case EX_O_EX:
+      deleteExpression(ex->l_exp);
+      deleteOperator(ex->op);
+      deleteExpression(ex->r_exp);
+      break;
+    default:
+      break;
   }
-  if (ex->r_exp != NULL) {
-    deleteExpression(ex->r_exp);
-  }
-  ex->op = NOOP;
+  ex->exType = UNDEF_EX;
   free(ex);
 }
 
 void deleteStatement(Statement* st) {
-  st->type = EMPTY;
-  if (st->statement != NULL) {
-    deleteStatement(st->statement);
+  switch (st->type) {
+    case K_E_SP:
+      deleteKeyword(st->keyword);
+      deleteExpression(st->express);
+      deleteSpecial(st->special);
+      break;
+    case K_E_R:
+      deleteKeyword(st->keyword);
+      deleteExpression(st->express);
+      deleteRoutine(st->l_routine);
+      break;
+    case E_SP:
+      deleteExpression(st->express);
+      deleteSpecial(st->special);
+      break;
+    case K_R_R:
+      deleteKeyword(st->keyword);
+      deleteRoutine(st->l_routine);
+      deleteRoutine(st->r_routine);
+      break;
+    default:
+      break;
   }
-  deleteExpression(st->express);
+  st->type = UNDEF_STATE;
   free(st);
 }
 
-void deleteAstNode(AstNode* astNode) {
-  if (astNode->next != NULL) {
-    deleteAstNode(astNode->next);
+void deleteRoutine(Routine* routine) {
+  if (routine->next != NULL) {
+    deleteRoutine(routine->next);
   }
-  deleteStatement(astNode->curr);
-  free(astNode);
+  deleteStatement(routine->curr);
+  free(routine);
 }
 
 void deleteAst(Ast* ast) {
-  deleteAstNode(ast->root);
+  if (ast->next != NULL) {
+    deleteAst(ast->next);
+  }
+  deleteRoutine(ast->root);
   free(ast);
 }
 
-void doubleElementStrCap(Element* el) {
-  el->strCapacity = el->strCapacity * 2;
-  el->strVal = realloc(el->strVal, (sizeof(char) * el->strCapacity));
-  if (el == NULL) {
-    printf("Error expanding element");
-    exit(EXIT_FAILURE);
+tokenCat getTokenType(Token* token) {
+  tokenCat tokenType;
+  if ((strcmp(token->leximes, "==") == 0) || (strcmp(token->leximes, "!=") == 0) ||
+      (strcmp(token->leximes, ">=") == 0) || (strcmp(token->leximes, "<=") == 0) ||
+      (strcmp(token->leximes, "*=") == 0) || (strcmp(token->leximes, "+=") == 0) ||
+      (strcmp(token->leximes, "/=") == 0) || (strcmp(token->leximes, "-=") == 0) ||
+      (strcmp(token->leximes, "&=") == 0) || (strcmp(token->leximes, "|=") == 0) ||
+      (strcmp(token->leximes, "^=") == 0) || (strcmp(token->leximes, "~=") == 0) ||
+      (strcmp(token->leximes, "%=") == 0) || (strcmp(token->leximes, "<<=") == 0) ||
+      (strcmp(token->leximes, ">>=") == 0) || (strcmp(token->leximes, "=") == 0) ||
+      (strcmp(token->leximes, "<<") == 0) || (strcmp(token->leximes, ">>") == 0) ||
+      (strcmp(token->leximes, "**") == 0) || (strcmp(token->leximes, "?") == 0) ||
+      (strcmp(token->leximes, "++") == 0) || (strcmp(token->leximes, "--") == 0) ||
+      (strcmp(token->leximes, "&&") == 0) || (strcmp(token->leximes, "||") == 0) ||
+      (strcmp(token->leximes, "<") == 0) || (strcmp(token->leximes, ">") == 0) ||
+      (strcmp(token->leximes, "+") == 0) || (strcmp(token->leximes, "-") == 0) ||
+      (strcmp(token->leximes, "*") == 0) || (strcmp(token->leximes, "/") == 0) ||
+      (strcmp(token->leximes, "%") == 0) || (strcmp(token->leximes, "&") == 0) ||
+      (strcmp(token->leximes, "|") == 0) || (strcmp(token->leximes, "^") == 0) ||
+      (strcmp(token->leximes, "!") == 0) || (strcmp(token->leximes, "~") == 0))  {
+    tokenType = OPERATOR;
   }
+  else if ((strcmp(token->leximes, "if") == 0) || (strcmp(token->leximes, "elif") == 0) ||
+           (strcmp(token->leximes, "else") == 0) || (strcmp(token->leximes, "for") == 0) ||
+           (strcmp(token->leximes, "while") == 0) || (strcmp(token->leximes, "do") == 0) ||
+           (strcmp(token->leximes, "jump") == 0) || (strcmp(token->leximes, "label") == 0) ||
+           (strcmp(token->leximes, "break") == 0) || (strcmp(token->leximes, "break") == 0) ||
+           (strcmp(token->leximes, "make") == 0) || (strcmp(token->leximes, "return") == 0) ||
+           (strcmp(token->leximes, "switch") == 0) || (strcmp(token->leximes, "case") == 0) ||
+           (strcmp(token->leximes, "default") == 0) || (strcmp(token->leximes, "include") == 0) ||
+           (strcmp(token->leximes, "try") == 0) || (strcmp(token->leximes, "catch") == 0) ||
+           (strcmp(token->leximes, "throw") == 0) || (strcmp(token->leximes, "create") == 0) ||
+           (strcmp(token->leximes, "destroy") == 0)) {
+    tokenType = KEYWORD;
+  }
+  else if ((strcmp(token->leximes, "(") == 0) || (strcmp(token->leximes, ")") == 0) ||
+           (strcmp(token->leximes, "{") == 0) || (strcmp(token->leximes, "}") == 0) ||
+           (strcmp(token->leximes, "[") == 0) || (strcmp(token->leximes, "]") == 0) ||
+           (strcmp(token->leximes, ";") == 0) || (strcmp(token->leximes, ":") == 0) ||
+           (strcmp(token->leximes, "\n") == 0)) {
+    tokenType = SPECIAL;
+  }
+  else {
+    tokenType = ELEMENT;
+  }
+  return tokenType;
 }
 
+void deepCopyTokenToElement(Element* el, Token* tok) {
+  el->token = generateToken();
+  while (el->token->capacity <= tok->size) {
+    doubleTokenCapacity(el->token);
+  }
+  el->token->size = tok->size;
+  memcpy(el->token->leximes, tok->leximes, tok->size);
+}
 
-Ast* createAst(TokenLine* lines) {
-  Ast* ast = generateAst();
-  AstNode* curr = ast->root;
-  while (lines->next != NULL) {
-    //Token* currToken = lineTokens[i];
+void deepCopyTokenToOperator(Operator* op, Token* tok) {
+  op->token = generateToken();
+  while (op->token->capacity <= tok->size) {
+    doubleTokenCapacity(op->token);
+  }
+  op->token->size = tok->size;
+  memcpy(op->token->leximes, tok->leximes, tok->size);
+}
 
+void deepCopyTokenToSpecial(Special* sp, Token* tok) {
+  sp->token = generateToken();
+  while (sp->token->capacity <= tok->size) {
+    doubleTokenCapacity(sp->token);
+  }
+  sp->token->size = tok->size;
+  memcpy(sp->token->leximes, tok->leximes, tok->size);
+}
 
+void deepCopyTokenToKeyword(Keyword* key, Token* tok) {
+  key->token = generateToken();
+  while (key->token->capacity <= tok->size) {
+    doubleTokenCapacity(key->token);
+  }
+  key->token->size = tok->size;
+  memcpy(key->token->leximes, tok->leximes, tok->size);
+}
 
-    if (lines->next->next != NULL) {
-      curr->next = generateAstNode();
-      curr = curr->next;
+Ast* createAst(TokenList* tokens) {
+  Ast* head = generateAst();
+  head->root = generateRoutine();
+  head->root->curr = generateStatement();
+  Ast* currAst = head;
+  Routine* currRoutine = currAst->root;
+  for (int i = 0; i < tokens->size; i++) {
+    Element* el;
+    Operator* op;
+    Special* sp;
+    Keyword* key;
+    switch (getTokenType(tokens->list[i])) {
+      case ELEMENT:
+        el = generateElement();
+        deepCopyTokenToElement(el, tokens->list[i]);
+        break;
+      case OPERATOR:
+        op = generateOperator();
+        deepCopyTokenToOperator(op, tokens->list[i]);
+        break;
+      case SPECIAL:
+        sp = generateSpecial();
+        deepCopyTokenToSpecial(sp, tokens->list[i]);
+        break;
+      case KEYWORD:
+        key = generateKeyword();
+        deepCopyTokenToKeyword(key, tokens->list[i]);
+        break;
+      default:
+        printf("Error parsing token");
+        exit(EXIT_FAILURE);
+        break;
     }
+
+
   }
 
-  deleteTokenLine(lines);
-  return ast;
+  deleteTokenList(tokens);
+  return head;
 }

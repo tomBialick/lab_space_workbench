@@ -51,7 +51,7 @@ TokenLine* generateTokenLine() {
     printf("Error creating token line");
     exit(EXIT_FAILURE);
   }
-  lines->tokens = generateTokenList();
+  lines->tokens = malloc(sizeof(TokenList));
   lines->next = NULL;
   return lines;
 }
@@ -109,7 +109,18 @@ void doubleTokenCapacity(Token* token) {
     printf("Error expanding token");
     exit(EXIT_FAILURE);
   }
- }
+}
+
+// void insertLine(TokenLine* lines, TokenList* list) {
+//   TokenLine* curr = lines;
+//   while (curr->next != NULL) {
+//     curr = curr->next;
+//   }
+//   TokenLine* newLine = generateTokenLine();
+//   newLine->tokens = list;
+//   lines->next = newLine;
+// }
+
 /**
  * separates into tokens without much interpretation, returns total amount
  */
@@ -319,7 +330,8 @@ TokenList* consolidator(TokenList* noComments) {
        (strcmp(noComments->list[i]->leximes, "-") == 0) || (strcmp(noComments->list[i]->leximes, "/") == 0) ||
        (strcmp(noComments->list[i]->leximes, "<") == 0) || (strcmp(noComments->list[i]->leximes, ">") == 0) ||
        (strcmp(noComments->list[i]->leximes, "%") == 0) || (strcmp(noComments->list[i]->leximes, "^") == 0) ||
-       (strcmp(noComments->list[i]->leximes, "&") == 0) || (strcmp(noComments->list[i]->leximes, "|") == 0))) {
+       (strcmp(noComments->list[i]->leximes, "&") == 0) || (strcmp(noComments->list[i]->leximes, "|") == 0) ||
+       (strcmp(noComments->list[i]->leximes, "~") == 0))) {
 
       consolidated->list[consolidated->size] = generateToken();
       consolidated->list[consolidated->size]->size = 3;
@@ -423,10 +435,11 @@ TokenList* consolidator(TokenList* noComments) {
   return consolidated;
 }
 
-void fillLines(TokenLine* lines, TokenList* tokens) {
+/*TokenLine* createLines(TokenList* tokens) {
+  TokenLine* lines = generateTokenLine();
   TokenLine* curr = lines;
+  TokenList* temp = generateTokenList();
   for (int i = 0; i < tokens->size; i++) {
-    //put it in Lines
     if (strcmp(tokens->list[i]->leximes, "\n") != 0) {
       printf("%s ", tokens->list[i]->leximes);
       if ((curr->tokens->size + 1) == curr->tokens->capacity) {
@@ -436,32 +449,59 @@ void fillLines(TokenLine* lines, TokenList* tokens) {
       while (curr->tokens->list[curr->tokens->size]->capacity <= tokens->list[i]->size) {
         doubleTokenCapacity(curr->tokens->list[curr->tokens->size]);
       }
-      lines->tokens->list[lines->tokens->size]->size = lines->tokens->list[i]->size;
-      memcpy(lines->tokens->list[lines->tokens->size]->leximes, tokens->list[i]->leximes, tokens->list[i]->size);
-      lines->tokens->size++;
+      curr->tokens->list[curr->tokens->size]->size = curr->tokens->list[i]->size;
+      memcpy(curr->tokens->list[curr->tokens->size]->leximes, tokens->list[i]->leximes, tokens->list[i]->size);
+      curr->tokens->size++;
     }
-    //make a new line
     else {
-    //   if (i < tokens->size - 1) {
+      if (i < tokens->size - 1) {
         printf("<NL>\n");
-    //     curr->next = generateTokenLine();
-    //     curr = curr->next;
-    //   }
+        curr->next = generateTokenLine();
+        curr = curr->next;
+      }
     }
   }
-}
-
-TokenLine* createLines(TokenList* tokens) {
-  TokenLine* lines = generateTokenLine();
-  fillLines(lines, tokens);
   deleteTokenList(tokens);
   return lines;
-}
+}*/
+
+// TokenLine* createLines(TokenList* tokens) {
+//   TokenLine* lines = generateTokenLine();
+//   TokenLine* curr = lines;
+//   TokenList* temp = generateTokenList();
+//
+//   for (int i = 0; i < tokens->size; i++) {
+//     if (strcmp(tokens->list[i]->leximes, "\n") != 0) {
+//       printf("%s ", tokens->list[i]->leximes);
+//       if ((temp->size + 1) == temp->capacity) {
+//         doubleTokenListCapacity(temp);
+//       }
+//       temp->list[temp->size] = generateToken();
+//       while (temp->list[temp->size]->capacity <= tokens->list[i]->size) {
+//         doubleTokenCapacity(temp->list[temp->size]);
+//       }
+//       temp->list[temp->size]->size = temp->list[i]->size;
+//       memcpy(temp->list[temp->size]->leximes, tokens->list[i]->leximes, tokens->list[i]->size);
+//       temp->size++;
+//     }
+//     else {
+//       if (i < tokens->size - 1) {
+//         printf("<NL>\n");
+//         insertLine(lines, temp);
+//         // deleteTokenList(temp);
+//         temp = generateTokenList();
+//         curr->next = generateTokenLine();
+//       }
+//     }
+//   }
+//   deleteTokenList(tokens);
+//   return lines;
+// }
 
 /**
  * separates into tokens with interpretation, returns the parsed struct
  */
-TokenLine* parse(FILE* file) {
+TokenList* parse(FILE* file) {
    TokenList* tokens = generateTokenList();
    naiveParse(file, tokens);
    tokens = removeEmptyLines(tokens);
@@ -470,7 +510,7 @@ TokenLine* parse(FILE* file) {
    tokens = removeEmptyLines(tokens);
    tokens = consolidator(tokens);
 
-   TokenLine* lines = createLines(tokens);
+   // TokenLine* lines = createLines(tokens);
 
-   return lines;
+   return tokens;
 }
