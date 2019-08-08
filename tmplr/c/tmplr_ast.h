@@ -4,7 +4,6 @@
 #include "tmplr_parser.h"
 
 typedef enum { ELEMENT, SPECIAL, OPERATOR, KEYWORD, UNDEF_TOKEN } tokenCat;
-
 typedef enum { INTEGER, DOUBLE, STRING, NO_TYPE } elemType;
 typedef enum { ADD, SUB, MULT, DIV, AND, OR, XOR, LSHIFT, RSHIFT, NOT, TWOCOMP,
                ADD_E, SUB_E, MULT_E, DIV_E, AND_E, OR_E, XOR_E, LSHIFT_E, RSHIFT_E,
@@ -17,6 +16,8 @@ typedef enum { L_PAREN, R_PAREN, L_BRACE, R_BRACE, L_CURLY, R_CURLY, NEWLINE, SE
 typedef enum { IF, ELSE, ELIF, WHILE, FOR, DO, JUMP, LABEL, BREAK, MAKE, RETURN,
                SWITCH, CASE, TRY, CATCH, THROW, INCLUDE, CREATE, DESTROY, UNDEF_KEY} keyType;
 typedef enum { EL_O_EL, EX_O_EL, EL_O_EX, EX_O_EX, UNDEF_EX } exType;
+typedef enum { EXPRESSION, STATEMENT, ROUTINE, UNDEF_LINE } lineCat;
+
 
 typedef struct _ELEMENT {
   elemType eType;
@@ -68,6 +69,22 @@ typedef struct _AST {
   struct _AST* next;
 } Ast;
 
+typedef struct _SMART_TOKEN {
+  tokenCat tType;
+  union {
+    Element* el;
+    Special* sp;
+    Operator* op;
+    Keyword* key;
+  };
+} SmartToken;
+
+typedef struct _LINE_OF_TOKENS {
+  lineCat lType;
+  SmartToken** smartTokens;
+  int size;
+} TokenBuffer;
+
 Element* generateElement();
 Special* generateSpecial();
 Operator* generateOperator();
@@ -85,6 +102,11 @@ void deleteExpression(Expression*);
 void deleteStatement(Statement*);
 void deleteRoutine(Routine*);
 void deleteAst(Ast*);
+
+void deepCopyTokenToElement(Element*, Token*);
+void deepCopyTokenToOperator(Operator*, Token*);
+void deepCopyTokenToSpecial(Special*, Token*);
+void deepCopyTokenToKeyword(Keyword*, Token*);
 
 Ast* createAst(TokenList*);
 

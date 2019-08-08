@@ -178,11 +178,11 @@ void naiveParse(FILE* file, TokenList* naiveTokens) {
        case '%':
        case '^':
        case ';':
-       case '\"':
-       case '\'':
        case '\\':
        case ':':
        case ',':
+       case '|':
+       case '~':
          //Finish current token
          if (token->building_flag == 1) {
            token->leximes[token->size] = '\0';
@@ -206,6 +206,7 @@ void naiveParse(FILE* file, TokenList* naiveTokens) {
          naiveTokens->size++;
          break;
        //Periods go here for now to not mess up decimals
+       //" and ' go here for strings and chars
        default:
          token->building_flag = 1;
          if ((token->size + 2) == token->capacity) {
